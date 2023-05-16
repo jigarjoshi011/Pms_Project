@@ -6,22 +6,15 @@ import {
   Max,
   Min,
 } from 'class-validator';
-
-export class getSignUpUserDTO {
-  @IsString()
-  name: string;
-
+export class getUserLoginDTO {
   @IsEmail()
+  @IsString()
   @IsLowercase()
   email: string;
 
   @IsInt()
   @Min(0)
   @Max(10)
+  @IsString()
   password: string;
-}
-
-export class addRoleDto {
-  @IsInt()
-  userId: number;
 }
