@@ -19,7 +19,7 @@ export class SignupService {
         const newUser = await prisma.users.create({
           data: {
             name: userDetails.name,
-            email: userDetails.email.toLocaleLowerCase(),
+            email: userDetails.email,
             password: hash,
             created_at: `${new Date()}`,
             updated_at: `${new Date()}`,

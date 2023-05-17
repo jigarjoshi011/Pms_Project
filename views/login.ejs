@@ -109,7 +109,7 @@
 
         <h2 class="login-header">Log in</h2>
 
-        <form class="login-container" onsubmit="submitForm(event, this)">
+        <form class="login-container" onsubmit="return submitForm(event, this)">
             <p><input type="email" name="email" id="email" placeholder="Email"></p>
             <p><input type="password" name="password" id="password" placeholder="Password"></p>
             <p><input type="submit" value="Log in"></p>
@@ -155,7 +155,15 @@
                 icon: 'success',
                 title: `${results.message}`
             })
-            // location.assign('/dashboard')
+
+            console.log("🚀 ~ file: login.ejs:159 ~ submitForm ~ results.data.userRole :", results.data.userRole)
+            if (results.data.userRole == 2) {
+
+                location.replace('/home')
+            }
+            else {
+                location.replace('/dashboard')
+            }
         }
         else {
 

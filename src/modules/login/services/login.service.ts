@@ -22,6 +22,9 @@ export class LoginService {
         where: {
           email: loginDetails.email,
         },
+        include: {
+          Users_has_Roles: true,
+        },
       });
 
       if (findUser == null) {
@@ -31,10 +34,12 @@ export class LoginService {
           loginDetails.password,
           findUser.password,
         );
-        console.log('compare', compare);
 
         if (compare) {
-          const payload = { id: findUser.id };
+          const payload = {
+            id: findUser.id,
+            role: findUser.Users_has_Roles[0].roleId,
+          };
 
           return {
             token: await this.jwtService.sign(payload, {
@@ -42,6 +47,8 @@ export class LoginService {
               algorithm: 'HS256',
               secret: process.env.JWT_SECRET,
             }),
+            userData: findUser,
+            userRole: findUser.Users_has_Roles[0].roleId,
           };
         } else {
           return new BadRequestException();
@@ -53,5 +60,12 @@ export class LoginService {
         error,
       );
     }
+  }
+  async genrateCookie(token, req, res) {
+    res.cookie('access_token', token, {
+      expires: new Date(new Date().getTime() + 30 * 1000),
+      sameSite: 'strict',
+      httpOnly: true,
+    });
   }
 }
