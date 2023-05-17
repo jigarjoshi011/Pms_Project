@@ -1,27 +1,33 @@
-import { HttpStatus, NestMiddleware } from '@nestjs/common';
+import {
+  HttpStatus,
+  NestMiddleware,
+  Request,
+  Response,
+  Next,
+} from '@nestjs/common';
 import { HttpErrorByCode } from '@nestjs/common/utils/http-error-by-code.util';
 import { JwtService } from '@nestjs/jwt';
-import { NextFunction, Request, Response } from 'express';
+import { NextFunction } from 'express';
 import * as moment from 'moment';
 import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 export class api_token_check_middleware implements NestMiddleware {
   constructor(private jwtService: JwtService) {}
-  async use(req: Request, res: Response, next: NextFunction) {
+  async use(@Request() req, @Response() res, @Next() next) {
     try {
       console.log(req.cookies);
       const accesstoken = req.cookies.auth_token;
 
-      if (!accesstoken || accesstoken == undefined) {
-        res.json({
-          HttpStatus: HttpStatus.UNAUTHORIZED,
-          ErrrorCode: HttpErrorByCode[401],
-          Message: 'Unauthorized access',
-          data: null,
-        });
-      }
-      const SECRET: any = process.env.JWT_SECRET;
+      // if (!accesstoken || accesstoken == undefined) {
+      //   res.json({
+      //     HttpStatus: HttpStatus.UNAUTHORIZED,
+      //     ErrrorCode: HttpErrorByCode[401],
+      //     Message: 'Unauthorized access',
+      //     data: null,
+      //   });
+      // }
+      // const SECRET: any = process.env.JWT_SECRET;
 
       const payload = await this.jwtService.verify(accesstoken);
       console.log(
