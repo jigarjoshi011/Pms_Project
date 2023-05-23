@@ -1,0 +1,165 @@
+<%- include("dashboard") -%>
+    <div class="container">
+        <div class="blur-ui p-3 pb-0 bg-gray">
+            <h4 class="text-black ">Category</h4>
+            <ul class="nav nav-tabs">
+                <li class="nav-item w-50 text-center all-center">
+                    <a class="nav-link w-100 fw-600 active" data-bs-toggle="tab" href="#View-Category" id="VC"
+                        onclick="viewCategory()">
+                        <span>
+                            View Category
+                        </span>
+
+                    </a>
+                </li>
+                <li class="nav-item w-50 text-center all-center">
+                    <a class="nav-link w-100 fw-600 " data-bs-toggle="tab" href="# Add-Category" id="AC"
+                        onclick="AddCategory()">
+                        <span>
+                            Add Category
+                        </span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="addCategory">
+
+        </div>
+        <div class="viewCategory">
+
+        </div>
+    </div>
+
+    </div>
+
+    <script>
+        let catData = ""
+        async function viewCategory() {
+            let ccontainer = document.querySelector('.addCategory');
+            let viewCon = document.querySelector('.viewCategory');
+            viewCon.innerHTML = catData
+            ccontainer.innerHTML = '';
+            const rec = await fetch('/categories/getcategory');
+            const userRecord = await rec.json();
+            if (userRecord.status == 200 && userRecord.data) {
+                let allUserRecord = []
+                allUserRecord = userRecord.data
+                let html = ` <div class="container mt-4">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Category Name</th>
+                                <th>Catagory Description</th>
+                                <th>Created At</th>
+                                <th class="text-center">Action</th>
+                            </tr>
+
+                        </thead>
+                        <tbody class="data">
+
+                        </tbody>
+                    </table>
+                </div>`
+                let container = document.querySelector('.viewCategory');
+                container.innerHTML = html;
+
+                let ct = ``
+
+                allUserRecord.forEach(element => {
+                    let htmlSegment = `<tr>
+                        <td>${element.id}</td>
+                        <td>${element.name}</td>
+                        <td>${element.description}</td>
+                        <td>${element.createdAt}</td>
+                        <td><a id="${element.id}" class="nav-link bg-danger text-center text-white rounded-pill" onClick ="DeleteAction(this)">Delete</a></td>
+                    </tr>`;
+                    ct += htmlSegment;
+                });
+                let okycontainer = document.querySelector('.data');
+                okycontainer.innerHTML = ct;
+
+            }
+
+
+        }
+        viewCategory()
+
+        async function AddCategory() {
+            let ccontainer = document.querySelector('.viewCategory');
+            catData = ccontainer.innerHTML
+            ccontainer.innerHTML = '';
+            let html = '';
+            let htmlSegment = `<div class="align-center"><form class="form-horizontal" onsubmit="return submitForm(event, this)" >
+            <fieldset>
+            <!-- Text input-->
+            <div class="form-group">
+            <label class="col-md-4 control-label my-2" for="category_name">Category Name</label>  
+            <div class="col-md-4">
+            <input id="category_name" name="category_name" placeholder="Category Name" class="form-control input-md my-4" required="" type="text" required>
+                
+            </div>
+            <div class="form-group">
+            <label class="col-md-4 control-label my-2" for="product_name">Category Description</label>  
+          
+                <div class="col-md-4 my-4">                     
+                    <input id="category_description" name="category_description" placeholder="Category Description" class="form-control input-md my-4" required type="text" maxlength="1000" required>
+            </div>
+                
+            </div>
+
+       
+            <div class="form-group">
+            <div class="col-md-4 my-4">
+                <input class='bg-success p-2 rounded-pill text-light' type="submit" value="Add Category" id="submit">
+            </div>
+
+            </fieldset>
+            </form>
+            </div>`;
+
+            html += htmlSegment;
+            let container = document.querySelector('.addCategory');
+            container.innerHTML = html;
+
+        }
+        async function submitForm(e, form) {
+            e.preventDefault();
+            const submitForm = await fetch('/categories', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    category_name: form.category_name.value, category_description: form.category_description.value
+                })
+            })
+            const results = await submitForm.json();
+            console.log(results);
+            if (results.status == 200) {
+
+                const Toast2 = Swal.mixin({
+                    toast: true,
+                    position: 'top',
+                    showConfirmButton: false,
+                    timer: 7000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                })
+
+                Toast2.fire({
+                    icon: 'success',
+                    title: `${results.message}`
+                })
+                document.querySelector('#category_name').value = ""
+                document.querySelector('#category_description').value = ""
+            }
+
+        }
+
+
+    </script>

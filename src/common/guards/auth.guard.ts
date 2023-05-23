@@ -14,7 +14,6 @@ export class AuthGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
     const token = request.cookies['auth_token'];
-    console.log('guaradtoken', token);
 
     if (!token) {
       throw new UnauthorizedException();
@@ -23,7 +22,11 @@ export class AuthGuard implements CanActivate {
       const payload = await this.jwtService.verifyAsync(token, {
         secret: process.env.JWT_SECRET,
       });
-      console.log(payload);
+
+      console.log(payload.role);
+      if (!(payload.role == 1)) {
+        throw new UnauthorizedException();
+      }
     } catch {
       throw new UnauthorizedException();
     }

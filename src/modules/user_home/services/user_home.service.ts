@@ -4,7 +4,7 @@ import { Injectable } from '@nestjs/common';
 export class user_homeService {
   async getuser_home() {
     try {
-      console.log('hello');
+      console.log('user_home');
     } catch (error) {}
   }
 }

@@ -12,6 +12,8 @@ import { LoginModule } from './modules/login/login.module';
 import { DashboardModule } from './modules/dashboard/dashboard.module';
 import { api_token_check_middleware } from './common/middlewares/api-token-check-middleware';
 import { user_home } from './modules/user_home/user_home.module';
+import { ProductModule } from './modules/product/product.module';
+import { CategoriesModule } from './modules/categories/categories.module';
 
 @Module({
   imports: [
@@ -20,14 +22,17 @@ import { user_home } from './modules/user_home/user_home.module';
     LoginModule,
     DashboardModule,
     user_home,
+    ProductModule,
+    CategoriesModule,
   ],
   controllers: [],
   providers: [],
 })
-export class AppModule implements NestModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(api_token_check_middleware)
-      .forRoutes({ path: '/home', method: RequestMethod.GET });
-  }
+export class AppModule {
+  // implements NestModule
+  // configure(consumer: MiddlewareConsumer) {
+  //   consumer
+  //     .apply(api_token_check_middleware)
+  //     .forRoutes({ path: '/home', method: RequestMethod.GET });
+  // }
 }

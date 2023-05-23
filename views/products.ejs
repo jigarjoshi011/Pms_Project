@@ -1,0 +1,98 @@
+<%- include("dashboard") -%>
+    <div class="container">
+        <div class="blur-ui p-3 pb-0 bg-gray">
+            <h4 class="text-black ">Products</h4>
+            <ul class="nav nav-tabs">
+                <li class="nav-item w-50 text-center all-center">
+                    <a class="nav-link w-100 fw-600 active" data-bs-toggle="tab" href="#View-Products" id="VP"
+                        onclick="viewProducts()">
+                        <span>
+                            View Products
+                        </span>
+
+                    </a>
+                </li>
+                <li class="nav-item w-50 text-center all-center">
+                    <a class="nav-link w-100 fw-600 " data-bs-toggle="tab" href="# Add-Product" id="AP"
+                        onclick="AddProducts()">
+                        <span>
+                            Add Product
+                        </span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="addProduct">
+
+        </div>
+        <div class="viewProduct">
+
+        </div>
+    </div>
+
+    <script>
+        async function viewProducts() {
+            let container = document.querySelector('.addProduct');
+            container.innerHTML = '';
+        }
+        async function AddProducts() {
+            let ccontainer = document.querySelector('.viewProduct');
+            ccontainer.innerHTML = '';
+            let html = '';
+            let htmlSegment = `<div class="align-center"><form class="form-horizontal"  method='post'>
+            <fieldset>
+            <!-- Text input-->
+            <div class="form-group">
+            <label class="col-md-4 control-label" for="product_name">Product Name</label>  
+            <div class="col-md-4">
+            <input id="product_name" name="product_name" placeholder="Product Name" class="form-control input-md my-4" required="" type="text" required>
+                
+            </div>
+            </div>
+            <!-- Select Basic -->
+            <div class="form-group">
+            <label class="col-md-4 control-label" for="product_categorie">Product Category</label>
+            <div class="col-md-4 my-4">
+                <select id="product_categorie" name="product_categorie" class="form-control">
+                </select>
+            </div>
+            </div>
+
+            <!-- Text input-->
+            <div class="form-group">
+            <label class="col-md-4 control-label" for="available_quantity">Available Quantity</label>  
+            <div class="col-md-4 my-4">
+            <input id="available_quantity" name="available_quantity" placeholder="Available Quantity" class="form-control input-md" required type="text">
+                
+            </div>
+            </div>
+            <!-- Textarea -->
+            <div class="form-group">
+            <label class="col-md-4 control-label" for="product_description">Product Description</label>
+            <div class="col-md-4 my-4">                     
+                <textarea required class="form-control" id="product_description" name="product_description"></textarea>
+            </div>
+            </div>
+            <!-- File Button --> 
+            <div class="form-group">
+            <label class="col-md-4 control-label" for="filebutton">main_image</label>
+            <div class="col-md-4 my-4">
+                <input required id="filebutton" name="filebutton" class="input-file" type="file">
+            </div>
+            </div>
+            <div class="form-group">
+            <div class="col-md-4 my-4">
+                <input class='bg-success p-2 rounded-pill text-light' type="submit" value="Add Product" id="submit">
+            </div>
+            </div>
+
+            </fieldset>
+            </form>
+            </div>`;
+
+            html += htmlSegment;
+            let container = document.querySelector('.addProduct');
+            container.innerHTML = html;
+
+        }
+    </script>

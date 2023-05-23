@@ -55,3 +55,37 @@ model Users_has_Roles {
 
   @@id([userId, roleId])
 }
+
+model Products {
+  id                   Int                    @id @default(autoincrement())
+  name                 String
+  price                Float
+  image                String                 @default("")
+  description          String?
+  Quantity             Int                    @default(0)
+  createdAt            DateTime?              @default(now())
+  updatedAt            DateTime?              @default(now())
+  deletedAt            DateTime?
+  ProductsOnCategories ProductsOnCategories[]
+}
+
+model Categories {
+  id                   Int                    @id @default(autoincrement())
+  name                 String                 @unique
+  createdAt            DateTime?              @default(now())
+  updatedAt            DateTime?              @default(now())
+  deletedAt            DateTime?
+  description          String?
+  ProductsOnCategories ProductsOnCategories[]
+}
+
+model ProductsOnCategories {
+  productId  Products   @relation(fields: [p_Id], references: [id])
+  p_Id       Int
+  categoryId Categories @relation(fields: [c_Id], references: [id])
+  c_Id       Int
+  createdAt  DateTime?  @default(now())
+  updatedAt  DateTime?  @default(now())
+
+  @@id([p_Id, c_Id])
+}
