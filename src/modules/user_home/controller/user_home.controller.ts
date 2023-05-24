@@ -21,7 +21,15 @@ export class user_homeController {
   @HttpCode(HttpStatus.OK)
   @ApiResponse({ status: HttpStatus.OK, description: 'user_home Render.' })
   @ApiOperation({ summary: '  ' })
-  async getDashboard(@Req() req: Request, @Res() res: Response): Promise<any> {
+  async getHome(@Req() req: Request, @Res() res: Response): Promise<any> {
+    const result: any = await this.user_homeService.getuser_home();
+  }
+  @Get('shop')
+  @Render('shopping')
+  @HttpCode(HttpStatus.OK)
+  @ApiResponse({ status: HttpStatus.OK, description: 'user_home Render.' })
+  @ApiOperation({ summary: '  ' })
+  async getShop(@Req() req: Request, @Res() res: Response): Promise<any> {
     const result: any = await this.user_homeService.getuser_home();
   }
 }

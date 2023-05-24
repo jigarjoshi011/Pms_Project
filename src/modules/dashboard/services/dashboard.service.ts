@@ -31,9 +31,7 @@ export class DashboardService {
           }
         })
         .filter((e) => e);
-      return {
-        data,
-      };
+      return data;
     } catch (error) {
       return new ForbiddenException();
     }
@@ -60,18 +58,6 @@ export class DashboardService {
       } else {
         return new BadRequestException();
       }
-    } catch (error) {
-      console.log(
-        '🚀 ~ file: dashboard.service.ts:74 ~ DashboardService ~ DeleteUserAction ~ error:',
-        error,
-      );
-      return new ForbiddenException();
-    }
-  }
-  async getLogOutAdmin(req) {
-    try {
-      const token = req.clearCookie['auth_token'];
-      console.log(token);
     } catch (error) {
       console.log(
         '🚀 ~ file: dashboard.service.ts:74 ~ DashboardService ~ DeleteUserAction ~ error:',

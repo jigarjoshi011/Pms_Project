@@ -46,9 +46,10 @@ export class DashboardController {
   @ApiOperation({ summary: 'User Data for admin' })
   async getUsers(@Req() req: Request, @Res() res: Response): Promise<any> {
     const result: any = await this.dashboardService.getUserData();
+
     return res.status(HttpStatus.OK).json({
       status: HttpStatus.OK,
-      data: result.data,
+      data: result,
       message: `User Record Fetched`,
     });
   }

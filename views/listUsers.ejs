@@ -74,16 +74,17 @@
             allUserRecord = userRecord.data
 
             let html = '';
-            allUserRecord.forEach(user => {
+
+            allUserRecord.forEach((user, i) => {
                 let htmlSegment = `<tr>
-                        <td>${user.id}</td>
+                        <td>${i + 1}</td>
                         <td>${user.userId}</td>
                         <td>${user.name}</td>
                         <td>${user.email}</td>
                         <td>${user.created_at}</td>
                         <td><a id="${user.userId}" class="nav-link bg-danger text-center text-white rounded-pill" onClick ="DeleteAction(this)">Delete</a></td>
                     </tr>`;
-
+                i++;
                 html += htmlSegment;
             });
             let container = document.querySelector('.userData');
@@ -93,7 +94,7 @@
     }
     fetchUserData()
     async function DeleteAction(e) {
-        // e.preventDefault();
+        e.preventDefault();
         console.log(e.id);
         const submitForm = await fetch('/dashboard/deleteRecord', {
             method: 'POST',

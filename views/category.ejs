@@ -81,8 +81,6 @@
                 okycontainer.innerHTML = ct;
 
             }
-
-
         }
         viewCategory()
 
@@ -126,7 +124,7 @@
         }
         async function submitForm(e, form) {
             e.preventDefault();
-            const submitForm = await fetch('/categories', {
+            const submitForm = await fetch('/categories/addCategory', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -158,8 +156,38 @@
                 document.querySelector('#category_name').value = ""
                 document.querySelector('#category_description').value = ""
             }
-
         }
+        async function DeleteAction(e) {
 
+            console.log(e.id);
+            const submitForm = await fetch('/categories/deleteRecord', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    id: e.id
+                })
+            })
+            const results = await submitForm.json();
+            if (results.status === 200) {
+                const Toast2 = Swal.mixin({
+                    toast: true,
+                    position: 'top',
+                    showConfirmButton: false,
+                    timer: 7000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                })
 
+                Toast2.fire({
+                    icon: 'success',
+                    title: `${results.message}`
+                })
+                viewCategory()
+            }
+        }
     </script>

@@ -1,0 +1,48 @@
+<%- include("header") -%>
+    <style>
+        .thumbnail:hover {
+            background-color: red;
+            opacity: 0.5;
+            cursor: pointer;
+        }
+    </style>
+    <div class="clothes_main section ">
+        <div class="container gap-1">
+            <h1 class="text-center text-white my-4">Products</h1>
+            <div class="row" id="insertAllCategory">
+
+            </div>
+        </div>
+    </div>
+
+
+
+    <script>
+        async function getCategoryData() {
+            const res = await fetch('/product/getProducts')
+            const CatRecord = await res.json();
+            if (CatRecord.status == 200 && CatRecord.data) {
+                let displayProduct = []
+                displayProduct = CatRecord.data.data
+                console.log("🚀 ~ file: shopping.ejs:25 ~ getCategoryData ~ displayProduct:", displayProduct)
+
+                let html = ``;
+                displayProduct.forEach(element => {
+                    let htmlSegment = `
+                    <div class="col-xl-4 col-lg-3 col-md-3 col-sm-12 my-3">
+                    <div class="${element.name}   bg-light py-2 px-3 text-center thumbnail rounded" id="${element.name}">
+                        <h2 class="my-4">${element.name}</h2>
+                        <img class="img-responsive" src="${element.image}"/>
+                        <h3 class="my-4"><span>$</span>${element.price}</h3>
+                        <h5 class="my-4">${element.description}</h5>
+                    </div>
+                </div>
+                `
+                    html += htmlSegment;
+                });
+                let container = document.querySelector('#insertAllCategory');
+                container.innerHTML = html;
+            }
+        }
+        getCategoryData()
+    </script>
