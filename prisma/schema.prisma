@@ -18,6 +18,8 @@ model Users {
   created_at      String
   updated_at      String
   Users_has_Roles Users_has_Roles[]
+  Cart            Cart[]
+  Order           Order[]
 }
 
 model Roles {
@@ -67,6 +69,8 @@ model Products {
   updatedAt            DateTime?              @default(now())
   deletedAt            DateTime?
   ProductsOnCategories ProductsOnCategories[]
+  Cart                 Cart[]
+  Order                Order[]
 }
 
 model Categories {
@@ -88,4 +92,30 @@ model ProductsOnCategories {
   updatedAt  DateTime?  @default(now())
 
   @@id([p_Id, c_Id])
+}
+
+model Cart {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+  user      Users     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int
+  product   Products  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId Int
+  quantity  Int
+  total     Int
+}
+
+model Order {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+  user      Users     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int
+  product   Products  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId Int
+  quantity  Int
+  total     Int
 }

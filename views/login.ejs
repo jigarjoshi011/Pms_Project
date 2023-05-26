@@ -114,6 +114,7 @@
             <p><input type="password" name="password" id="password" placeholder="Password"></p>
             <p><input type="submit" value="Log in"></p>
             <small>Not have an Account? <a href="/signup">Sign-up</a></small>
+            <small>Login With Google <a href="/google">Sign-up</a></small>
         </form>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -134,10 +135,12 @@
                 email: form.email.value, password: form.password.value
             })
         })
+
         const results = await submitForm.json();
-        console.log(results);
+
         if (results.status === 200) {
             localStorage.setItem('token', results.data.token)
+            localStorage.setItem('data', JSON.stringify(results.data))
 
             const Toast2 = Swal.mixin({
                 toast: true,
@@ -156,7 +159,7 @@
                 title: `${results.message}`
             })
 
-            console.log("🚀 ~ file: login.ejs:159 ~ submitForm ~ results.data.userRole :", results.data.userRole)
+
             if (results.data.userRole == 2) {
 
                 location.replace('/home')

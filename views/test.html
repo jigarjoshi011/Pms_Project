@@ -1,0 +1,36 @@
+<div class="card my-4">
+    <img src="${element.image}" alt="Los Angeles Skyscrapers" />
+    <div class="card-body">
+        <h2 class="card-title">${element.name}</h2>
+        <div>
+            <h3 class="my-4"><span>$</span>${element.price}</h3>
+        </div>
+        <div class="">
+            <a id="${element.id}" class="bg-danger text-light rounded pill p-2 border border-dark"
+                onclick="removeOrderAction(this)">
+
+                <i class="fa fa-shopping-cart" style="font-size:16px"> <span class="mx-2">Canncel Order</span> </i>
+
+            </a>
+        </div>
+        <div class="my-5 mx-0 ">
+            <a id="${element.id}" class="bg-success text-light rounded pill p-2 border border-dark"
+                onclick="OrderProduct(this)">
+
+                <i class="fa fa-shopping-cart" style="font-size:16px"> <span class="mx-2">Order</span> </i>
+                <a class="bg-warning mx-4 p-2 rounded pill border border-dark">
+                    <span class="fw-bold">Quantity:&nbsp;${AllOrdedQuntity[i]}</span>
+
+                </a>
+            </a>
+        </div>
+
+        <div class="my-5 mx-0">
+
+            <div class="">
+                <h5 class="my-4"> <span class="fw-bold">Description:&nbsp&nbsp</span>${element.description}</h5>
+            </div>
+
+        </div>
+    </div>
+</div>

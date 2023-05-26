@@ -14,6 +14,8 @@ import { api_token_check_middleware } from './common/middlewares/api-token-check
 import { user_home } from './modules/user_home/user_home.module';
 import { ProductModule } from './modules/product/product.module';
 import { CategoriesModule } from './modules/categories/categories.module';
+import { ShopModule } from './modules/shop/shop.module';
+import { CartModule } from './modules/cart/cart.module';
 
 @Module({
   imports: [
@@ -24,6 +26,8 @@ import { CategoriesModule } from './modules/categories/categories.module';
     user_home,
     ProductModule,
     CategoriesModule,
+    ShopModule,
+    CartModule,
   ],
   controllers: [],
   providers: [],

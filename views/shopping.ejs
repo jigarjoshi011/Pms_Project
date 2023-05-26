@@ -2,13 +2,17 @@
     <style>
         .thumbnail:hover {
             background-color: red;
-            opacity: 0.5;
+            opacity: 0.8;
             cursor: pointer;
+        }
+
+        .fw-bold {
+            font-weight: 700;
         }
     </style>
     <div class="clothes_main section ">
         <div class="container gap-1">
-            <h1 class="text-center text-white my-4">Products</h1>
+            <h1 class="text-center text-white my-5"></h1>
             <div class="row" id="insertAllCategory">
 
             </div>
@@ -18,31 +22,168 @@
 
 
     <script>
+        let data = JSON.parse(localStorage.getItem('data'))
+        const UserId = data.userData.id
         async function getCategoryData() {
-            const res = await fetch('/product/getProducts')
-            const CatRecord = await res.json();
-            if (CatRecord.status == 200 && CatRecord.data) {
-                let displayProduct = []
-                displayProduct = CatRecord.data.data
-                console.log("🚀 ~ file: shopping.ejs:25 ~ getCategoryData ~ displayProduct:", displayProduct)
+            const Url = window.location.href
+            if (Url == "http://localhost:3000/home/shop") {
+                const res = await fetch('/product/getProducts')
+                const CatRecord = await res.json();
 
-                let html = ``;
-                displayProduct.forEach(element => {
-                    let htmlSegment = `
-                    <div class="col-xl-4 col-lg-3 col-md-3 col-sm-12 my-3">
-                    <div class="${element.name}   bg-light py-2 px-3 text-center thumbnail rounded" id="${element.name}">
-                        <h2 class="my-4">${element.name}</h2>
-                        <img class="img-responsive" src="${element.image}"/>
-                        <h3 class="my-4"><span>$</span>${element.price}</h3>
-                        <h5 class="my-4">${element.description}</h5>
+                if (CatRecord.status == 200 && CatRecord.data) {
+                    let displayProduct = []
+                    displayProduct = CatRecord.data.data
+
+
+                    let html = ``;
+                    displayProduct.forEach(element => {
+                        let htmlSegment = `
+                        <div class="col-xl-4 col-lg-3 col-md-3 col-sm-12 my-3">
+                        <div class="${element.name}   bg-light py-2 px-3 text-center thumbnail rounded" id="${element.name}">
+                            <h2 class="my-4">${element.name}</h2>
+                            <img class="img-responsive" src="${element.image}"/>
+                            <div >
+                              
+                                <h3 class="my-4"><span>$</span>${element.price}</h3>
+                            </div>
+                            
+                            <a id="${element.id}" class="bg-danger text-light rounded pill p-2 border border-dark" onclick="addToCartAction(this)">
+                              
+                                <i class="fa fa-shopping-cart" style="font-size:16px"> <span class="mx-2">Add To Cart</span>  </i>
+
+                            </a>
+                            <a class="bg-warning m-4 p-2 rounded pill border border-dark">
+                                <span class="fw-bold">Quantity:&nbsp;</span>
+                                <select name="Quantity" id="Product_quantity">
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                </select>
+                            </a>
+                            <div class="">
+                              
+                                <h5 class="my-4">  <span class="fw-bold">Description:&nbsp&nbsp</span>${element.description}</h5>
+                            </div>
+                        </div>
                     </div>
-                </div>
-                `
-                    html += htmlSegment;
-                });
-                let container = document.querySelector('#insertAllCategory');
-                container.innerHTML = html;
+                    `
+                        html += htmlSegment;
+                    });
+                    let container = document.querySelector('#insertAllCategory');
+                    container.innerHTML = html;
+                }
             }
+            else {
+                const res = await fetch(Url, {
+                    method: 'post',
+                    headers: {
+                        'Content-type': 'application/json; charset=UTF-8',
+                    }
+                })
+                const CatRecord = await res.json();
+
+                if (CatRecord.status == 200 && CatRecord.data) {
+                    let displayProduct = []
+                    displayProduct = CatRecord.data
+
+                    let html = ``;
+                    displayProduct.forEach(element => {
+                        let htmlSegment = `
+                        <div class="col-xl-4 col-lg-3 col-md-3 col-sm-12 my-3">
+                        <div class="${element.name}   bg-light py-2 px-3 text-center thumbnail rounded" id="${element.name}">
+                            <h2 class="my-4">${element.name}</h2>
+                            <img class="img-responsive" src="${element.image}"/>
+                            <div >
+                              
+                              <h3 class="my-4"><span>$</span>${element.price}</h3>
+                          </div>
+                          
+                          <a id="${element.id}" class="bg-danger text-light rounded pill p-2 border border-dark" onclick="addToCartAction(this)">
+                              
+                              <i class="fa fa-shopping-cart" style="font-size:16px"> <span class="mx-2">Add To Cart</span>  </i>
+
+                          </a>
+                          <a class="bg-warning m-4 p-2 rounded pill border border-dark">
+                              <span class="fw-bold">Quantity:&nbsp;</span>
+                              <select name="Quantity" id="Product_quantity">
+                                  <option value="1">1</option>
+                                  <option value="2">2</option>
+                                  <option value="3">3</option>
+                                  <option value="4">4</option>
+                              </select>
+                          </a>
+                          <div class="">
+                            
+                              <h5 class="my-4">  <span class="fw-bold">Description:&nbsp&nbsp</span>${element.description}</h5>
+                          </div>
+                        </div>
+                    </div>
+                    `
+                        html += htmlSegment;
+                    });
+                    let container = document.querySelector('#insertAllCategory');
+                    container.innerHTML = html;
+                }
+            }
+
+
         }
         getCategoryData()
+
+        async function addToCartAction(target) {
+            const res = await fetch('/cart/addItemsInCart', {
+                method: 'POST',
+                headers: {
+                    'Content-type': 'application/json; charset=UTF-8',
+                },
+                body: JSON.stringify({
+                    data: { id: target.id, quantity: document.getElementById('Product_quantity').value }
+                })
+            })
+
+            const results = await res.json()
+            if (results.status == 200) {
+
+                const Toast2 = Swal.mixin({
+                    toast: true,
+                    position: 'top',
+                    showConfirmButton: false,
+                    timer: 7000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                })
+
+                Toast2.fire({
+                    icon: 'success',
+                    title: `${results.message}`
+                })
+
+
+            }
+            else if (results.status == 400) {
+
+                const Toast2 = Swal.mixin({
+                    toast: true,
+                    position: 'top',
+                    showConfirmButton: false,
+                    timer: 7000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                })
+
+                Toast2.fire({
+                    icon: 'error',
+                    title: `${results.message}`
+                })
+
+
+            }
+        }
     </script>

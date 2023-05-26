@@ -1,0 +1,216 @@
+<%- include("header") -%>
+    <div class="clothes_main section ">
+        <div class="container gap-1">
+            <h1 class="text-center text-white my-5"></h1>
+            <div class="row">
+
+                <div class="col-12 d-flex flex-wrap my-4" id="insertAllCartData">
+
+
+                </div>
+
+            </div>
+        </div>
+
+        <script>
+            let data = JSON.parse(localStorage.getItem('data'))
+            const UserId = data.userData.id
+
+            async function getCartData() {
+                const res = await fetch('/cart/cartData')
+                const CartRecord = await res.json();
+                const ProductInCart = CartRecord.data.products
+                const quantity = CartRecord.data.Quantity
+
+                let html = ''
+                let i = 0
+                ProductInCart.forEach((element, i) => {
+
+                    let htmlSegment = `
+                    <div class="card mx-3 w-25">
+                        <img src="${element.image}"
+                            alt="Los Angeles Skyscrapers" />
+                        <div class="card-body">
+                            <h2 class="card-title">${element.name}</h2>
+                            <div >
+                              <h3 class="my-4"><span>$</span>${element.price}</h3>
+                          </div>
+                          <div class="">
+                          <a id="${element.id}" class="bg-danger text-light rounded pill p-2 border border-dark" onclick="removeToCartAction(this)">
+
+                              <i class="fa fa-shopping-cart" style="font-size:16px"> <span class="mx-2">Remove from Cart</span>  </i>
+
+                          </a>
+                        </div>
+                          <div class="my-5 mx-0 ">
+                          <a id="${element.id}" class="bg-success text-light rounded pill p-2 border border-dark" onclick="OrderProduct(this)">
+
+                              <i class="fa fa-shopping-cart" style="font-size:16px"> <span class="mx-2">Order</span>  </i>
+                              <a class="bg-warning mx-4 p-2 rounded pill border border-dark">
+                                <span class="fw-bold">Quantity:&nbsp;${quantity[i]}</span>
+                             
+                            </a>
+                          </a>
+                        </div>
+                       
+                          <div class="my-5 mx-0">
+                        
+                          <div class="">
+                              <h5 class="my-4">  <span class="fw-bold">Description:&nbsp&nbsp</span>${element.description}</h5>
+                          </div>
+                      
+                    </div>
+                    </div>
+                    </div>
+                    `
+                    html += htmlSegment;
+
+
+                });
+                let container = document.querySelector('#insertAllCartData');
+                container.innerHTML = html;
+
+            }
+            getCartData()
+
+            async function removeToCartAction(target) {
+                const res = await fetch('/cart/deleteCartRecord', {
+                    method: 'POST',
+                    headers: {
+                        'Content-type': 'application/json; charset=UTF-8',
+                    },
+                    body: JSON.stringify({
+                        data: target.id
+                    })
+                })
+                const results = await res.json()
+                if (results.status == 200) {
+                    const Toast2 = Swal.mixin({
+                        toast: true,
+                        position: 'top',
+                        showConfirmButton: false,
+                        timer: 7000,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.addEventListener('mouseenter', Swal.stopTimer)
+                            toast.addEventListener('mouseleave', Swal.resumeTimer)
+                        }
+                    })
+
+                    Toast2.fire({
+                        icon: 'success',
+                        title: `${results.message}`
+                    })
+                    getCartData()
+                }
+                else {
+                    const Toast2 = Swal.mixin({
+                        toast: true,
+                        position: 'top',
+                        showConfirmButton: false,
+                        timer: 7000,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.addEventListener('mouseenter', Swal.stopTimer)
+                            toast.addEventListener('mouseleave', Swal.resumeTimer)
+                        }
+                    })
+
+                    Toast2.fire({
+                        icon: 'error',
+                        title: `${results.message}`
+                    })
+                    getCartData()
+                }
+            }
+            async function removeToCartActionforOrder(target) {
+                const res = await fetch('/cart/deleteCartRecord', {
+                    method: 'POST',
+                    headers: {
+                        'Content-type': 'application/json; charset=UTF-8',
+                    },
+                    body: JSON.stringify({
+                        data: target.id
+                    })
+                })
+                const results = await res.json()
+                if (results.status == 200) {
+                    getCartData()
+                }
+                else {
+                    const Toast2 = Swal.mixin({
+                        toast: true,
+                        position: 'top',
+                        showConfirmButton: false,
+                        timer: 7000,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.addEventListener('mouseenter', Swal.stopTimer)
+                            toast.addEventListener('mouseleave', Swal.resumeTimer)
+                        }
+                    })
+
+                    Toast2.fire({
+                        icon: 'error',
+                        title: `${results.message}`
+                    })
+                    getCartData()
+                }
+            }
+
+            async function OrderProduct(target) {
+                const res = await fetch('/cart/addOrder', {
+                    method: 'POST',
+                    headers: {
+                        'Content-type': 'application/json; charset=UTF-8',
+                    },
+                    body: JSON.stringify({
+                        data: target.id
+                    })
+                })
+                const results = await res.json()
+                console.log("🚀 ~ file: cart.ejs:137 ~ OrderProduct ~ results:", results)
+
+                if (results.status == 200) {
+                    const Toast2 = Swal.mixin({
+                        toast: true,
+                        position: 'top',
+                        showConfirmButton: false,
+                        timer: 7000,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.addEventListener('mouseenter', Swal.stopTimer)
+                            toast.addEventListener('mouseleave', Swal.resumeTimer)
+                        }
+                    })
+
+                    Toast2.fire({
+                        icon: 'success',
+                        title: `${results.message}`
+                    })
+                    removeToCartActionforOrder(target)
+                    getCartData()
+                }
+                else {
+                    const Toast2 = Swal.mixin({
+                        toast: true,
+                        position: 'top',
+                        showConfirmButton: false,
+                        timer: 7000,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.addEventListener('mouseenter', Swal.stopTimer)
+                            toast.addEventListener('mouseleave', Swal.resumeTimer)
+                        }
+                    })
+
+                    Toast2.fire({
+                        icon: 'error',
+                        title: `${results.message}`
+                    })
+                    getCartData()
+                }
+            }
+
+
+        </script>

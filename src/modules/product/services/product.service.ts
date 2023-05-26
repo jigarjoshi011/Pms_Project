@@ -147,4 +147,13 @@ export class ProductService {
       }
     } catch (error) {}
   }
+  async getProductEdit(data) {
+    try {
+    } catch (error) {}
+  }
+  async EditProductGetData(id) {
+    try {
+      console.log('>>>>>>>>>>');
+    } catch (error) {}
+  }
 }

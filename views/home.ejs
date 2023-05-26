@@ -68,12 +68,12 @@
                                 <nav class="main-menu">
                                     <ul class="menu-area-main">
                                         <li> <a href="/home">Home</a> </li>
-                                        <li> <a href="about.html">About</a> </li>
-                                        <li><a href="testmonial.html">Testmonial</a></li>
+
+
                                         <li><a href="/home/shop">Shop</a></li>
                                         <li><a href="/cart">Cart</a></li>
-                                        <li><a href="/order">Orders</a></li>
-                                        <li><a href="contact.html">Contact Us</a></li>
+                                        <li><a href="/cart/orders">Orders</a></li>
+
                                         <li class="last"><a href="#"><img src="images/search_icon.png" alt="icon" /></a>
                                         </li>
                                     </ul>
@@ -580,7 +580,7 @@
                 displayCategory.forEach(element => {
                     let htmlSegment = `
                     <div class="col-xl-4 col-lg-3 col-md-3 col-sm-12 my-3">
-                        <a href="home/${element.name} ">
+                        <a href="/home/shop/${element.name} ">
                     <div class="${element.name}   bg-light py-2 px-3 text-center thumbnail rounded" id="${element.name}">
                         <h4 class="my-4">${element.name}</h4>
                     </div>

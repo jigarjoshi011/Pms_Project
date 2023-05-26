@@ -14,6 +14,8 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <!-- bootstrap css -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="/css/bootstrap.min.css">
     <!-- style css -->
     <link rel="stylesheet" href="/css/style.css">
@@ -30,6 +32,7 @@
     <link rel="stylesheet" href="/css/owl.theme.default.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.css"
         media="screen">
+    <script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
     <!--[if lt IE 9]>
       <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script><![endif]-->
@@ -58,15 +61,59 @@
                     <div class="col-xl-9 col-lg-9 col-md-9 col-sm-9">
                         <div class="menu-area">
                             <div class="limit-box">
+                                <!-- <nav class="main-menu navbar navbar-expand-lg navbar-dark ">
+                                    <div class="container-fluid">
+
+                                        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                                            data-bs-target="#navbarNavDarkDropdown"
+                                            aria-controls="navbarNavDarkDropdown" aria-expanded="false"
+                                            aria-label="Toggle navigation">
+                                            <span class="navbar-toggler-icon"></span>
+                                        </button>
+                                        <div class="collapse navbar-collapse" id="navbarNavDarkDropdown">
+                                            <ul class="navbar-nav menu-area-main ">
+                                                <li> <a href="/home">Home</a> </li>
+                                                <li class="nav-item dropdown">
+                                                    <a class="nav-link dropdown-toggle text-light" href="#"
+                                                        id="navbarDarkDropdownMenuLink" role="button"
+                                                        data-bs-toggle="dropdown" aria-expanded="false">
+                                                        Shop
+                                                    </a>
+                                                    <ul class="dropdown-menu dropdown-menu-dark "
+                                                        aria-labelledby="navbarDarkDropdownMenuLink">
+                                                        <li><a class="dropdown-item" href="#">Action</a></li>
+                                                        <li><a class="dropdown-item" href="#">Another action</a></li>
+                                                        <li><a class="dropdown-item" href="#">Something else here</a>
+                                                        </li>
+                                                    </ul>
+                                                </li>
+                                                <li><a href="/home/shop">Shop</a></li>
+                                                <li><a href="/cart">Cart</a></li>
+                                                <li><a href="/order">Orders</a></li>
+
+                                                <li class="last"><a href="#"><img src="/images/search_icon.png"
+                                                            alt="icon" /></a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </nav> -->
                                 <nav class="main-menu">
                                     <ul class="menu-area-main">
                                         <li> <a href="/home">Home</a> </li>
-                                        <li> <a href="about.html">About</a> </li>
-                                        <li><a href="testmonial.html">Testmonial</a></li>
-                                        <li><a href="/home/shop">Shop</a></li>
-                                        <li><a href="/cart">Cart</a></li>
-                                        <li><a href="/order">Orders</a></li>
-                                        <li><a href="contact.html">Contact Us</a></li>
+
+                                        <li>
+                                            <a href="/home/shop">Shop</a>
+                                        </li>
+                                        <li class="position-relative"><a href="/cart">Cart &nbsp;
+                                                <span
+                                                    class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                                    1+
+
+                                                </span>
+                                            </a></li>
+                                        <li><a href="/cart/orders">Orders</a></li>
+
                                         <li class="last"><a href="#"><img src="/images/search_icon.png"
                                                     alt="icon" /></a>
                                         </li>
@@ -81,82 +128,7 @@
         <!-- end header inner -->
     </header>
     <!-- end header -->
-    <section>
-        <div id="main_slider" class="section carousel slide banner-main" data-ride="carousel">
-            <ol class="carousel-indicators">
-                <li data-target="#main_slider" data-slide-to="0" class="active"></li>
-                <li data-target="#main_slider" data-slide-to="1"></li>
-                <li data-target="#main_slider" data-slide-to="2"></li>
-            </ol>
-            <div class="carousel-inner">
-                <div class="carousel-item active">
-                    <div class="container">
-                        <div class="row marginii">
-                            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12">
-                                <div class="carousel-caption ">
-                                    <h1>Welcome to <strong class="color">Our Shop</strong></h1>
-                                    <p>There are many variations of passages of Lorem Ipsum available, but the majority
-                                        have suffered alteration in some form, by injected humour</p>
-                                    <a class="btn btn-lg btn-primary" href="#" role="button">Buy Now</a>
-                                    <a class="btn btn-lg btn-primary" href="about.html" role="button">About </a>
-                                </div>
-                            </div>
-                            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12">
-                                <div class="img-box">
-                                    <figure><img src="/images/boksing-gloves.png" alt="img" /></figure>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="carousel-item">
-                    <div class="container">
-                        <div class="row marginii">
-                            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12">
-                                <div class="carousel-caption ">
-                                    <h1>Welcome to <strong class="color">Our Shop</strong></h1>
-                                    <p>There are many variations of passages of Lorem Ipsum available, but the majority
-                                        have suffered alteration in some form, by injected humour</p>
-                                    <a class="btn btn-lg btn-primary" href="#" role="button">Buy Now</a>
-                                    <a class="btn btn-lg btn-primary" href="about.html" role="button">About</a>
-                                </div>
-                            </div>
-                            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12">
-                                <div class="img-box ">
-                                    <figure><img src="/images/boksing-gloves.png" alt="img" /></figure>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="carousel-item">
-                    <div class="container">
-                        <div class="row marginii">
-                            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12">
-                                <div class="carousel-caption ">
-                                    <h1>Welcome to <strong class="color">Our Shop</strong></h1>
-                                    <p>There are many variations of passages of Lorem Ipsum available, but the majority
-                                        have suffered alteration in some form, by injected humour</p>
-                                    <a class="btn btn-lg btn-primary" href="#" role="button">Buy Now</a>
-                                    <a class="btn btn-lg btn-primary" href="about.html" role="button">About</a>
-                                </div>
-                            </div>
-                            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12">
-                                <div class="img-box">
-                                    <figure><img src="/images/boksing-gloves.png" alt="img" /></figure>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <a class="carousel-control-prev" href="#main_slider" role="button" data-slide="prev">
-                <i class='fa fa-angle-left'></i></a>
-            <a class="carousel-control-next" href="#main_slider" role="button" data-slide="next">
-                <i class='fa fa-angle-right'></i>
-            </a>
-        </div>
-    </section>
+
 
 
 
@@ -173,6 +145,9 @@
     <!-- javascript -->
     <script src="js/owl.carousel.js"></script>
     <script src="https:cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10.10.1/dist/sweetalert2.all.min.js"></script>
+    <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/sweetalert2@10.10.1/dist/sweetalert2.min.css'>
     <script>
         $(document).ready(function () {
             $(".fancybox").fancybox({
@@ -188,7 +163,12 @@
                 $(this).removeClass('transition');
             });
         });
+        // async function getCartData() {
+        //     let data = JSON.parse(localStorage.getItem('data'))
+        //     const UserId = data.userData.id
+        // }
 
+        // getCartData()
     </script>
 </body>
 

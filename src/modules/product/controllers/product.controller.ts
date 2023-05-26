@@ -4,6 +4,7 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  Param,
   Post,
   Render,
   Req,
@@ -55,8 +56,61 @@ export class ProductController {
     return res.status(HttpStatus.OK).json({
       status: HttpStatus.OK,
       data: result,
-      message: `Successfully fetched category Data`,
+      message: `Successfully Edited Product Data`,
     });
+  }
+  @Post('edit-product/:id')
+  @HttpCode(HttpStatus.OK)
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Edit Product',
+  })
+  @ApiOperation({ summary: 'Edit Product' })
+  public async getProductEdit(
+    @Req()
+    req: Request,
+    @Res()
+    res: Response,
+  ): Promise<any> {
+    const token = req.cookies['auth_token'];
+    const payload = await this.jwtService.verifyAsync(token, {
+      secret: process.env.JWT_SECRET,
+    });
+    const result: any = await this.productService.getProductEdit(payload);
+    return res.status(HttpStatus.OK).json({
+      status: HttpStatus.OK,
+      data: result,
+      message: `Successfully Edit Product Data`,
+    });
+  }
+  @Get('edit-product/:id')
+  @Render('edit_products')
+  @HttpCode(HttpStatus.OK)
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Edit Product Page',
+  })
+  @ApiOperation({ summary: 'Edit Product Page' })
+  public async getProductEditPage() {
+    return;
+  }
+
+  @Get('edit-product-data/:id')
+  @Render('edit_products')
+  @HttpCode(HttpStatus.OK)
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Edit Product data',
+  })
+  @ApiOperation({ summary: 'Edit Product data' })
+  public async getProductEditData(
+    @Req()
+    req: Request,
+    @Res()
+    res: Response,
+    @Param() params: number,
+  ): Promise<any> {
+    const result: any = await this.productService.EditProductGetData(params);
   }
 
   @Post('addProduct')

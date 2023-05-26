@@ -1,0 +1,134 @@
+<%- include("header") -%>
+    <div class="clothes_main section ">
+        <div class="container gap-1">
+            <h1 class="text-center text-white my-5"></h1>
+            <div class="row">
+
+                <div class="col-12 d-flex flex-wrap my-4" id="insertAllOrders">
+
+
+                </div>
+
+            </div>
+        </div>
+
+        <script>
+
+            let data = JSON.parse(localStorage.getItem('data'))
+            const UserId = data.userData.id
+            async function getOrderData() {
+                const res = await fetch('/cart/getAllOrder')
+                const OrderRecord = await res.json();
+                console.log("🚀 ~ file: order.ejs:22 ~ getCartData ~ OrderRecord:", OrderRecord)
+                const AllOrdedProducts = OrderRecord.data.findProductsPrice
+                const AllOrdedQuntity = OrderRecord.data.Quantity
+
+                let html = ``;
+                let i = 0
+                AllOrdedProducts.forEach((element, i) => {
+                    let htmlSegment = `<div class="card mx-4 w-25">
+                        <img src="${element.image}"
+                            alt="Los Angeles Skyscrapers" />
+                        <div class="card-body">
+                            <h2 class="card-title">${element.name}</h2>
+                            <div >
+                              <h3 class="my-4"><span>$</span>${element.price}</h3>
+                          </div>
+                          <div class="">
+                          <a id="${element.id}" class="bg-danger text-light rounded pill p-2 border border-dark" onclick="removeOrderAction(this)">
+                        
+                              <i class="fa fa-shopping-cart" style="font-size:16px"> <span class="mx-2">Canncel Order</span>  </i>
+
+                          </a>
+                        </div>
+                          <div class="my-5 mx-0 ">
+                       
+                              <a class="bg-warning p-2 rounded pill border border-dark">
+                                <span class="fw-bold AllOrdedQuntity" id="${AllOrdedQuntity[i]}">Quantity:&nbsp;${AllOrdedQuntity[i]}</span>
+                             
+                            
+                          </a>
+                        </div>
+                       
+                          <div class="my-5 mx-0">
+                        
+                          <div class="">
+                              <h5 class="my-4">  <span class="fw-bold">Description:&nbsp&nbsp</span>${element.description}</h5>
+                          </div>
+                      
+                    </div>
+                    </div>
+                    </div>`
+                    html += htmlSegment;
+                });
+                let container = document.querySelector('#insertAllOrders');
+                container.innerHTML = html;
+
+            }
+            getOrderData()
+            async function removeOrderAction(target) {
+                const res = await fetch('/cart/deleteOrder', {
+                    method: 'POST',
+                    headers: {
+                        'Content-type': 'application/json; charset=UTF-8',
+                    },
+                    body: JSON.stringify({
+                        data: target.id
+                    })
+                })
+                const results = await res.json()
+                console.log("🚀 ~ file: order.ejs:82 ~ removeOrderAction ~ results:", results)
+                if (results.status == 200) {
+                    const Toast2 = Swal.mixin({
+                        toast: true,
+                        position: 'top',
+                        showConfirmButton: false,
+                        timer: 7000,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.addEventListener('mouseenter', Swal.stopTimer)
+                            toast.addEventListener('mouseleave', Swal.resumeTimer)
+                        }
+                    })
+
+                    Toast2.fire({
+                        icon: 'success',
+                        title: `${results.message}`
+                    })
+                    getOrderData()
+                    addToCartAction(target)
+                }
+                else {
+                    const Toast2 = Swal.mixin({
+                        toast: true,
+                        position: 'top',
+                        showConfirmButton: false,
+                        timer: 7000,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.addEventListener('mouseenter', Swal.stopTimer)
+                            toast.addEventListener('mouseleave', Swal.resumeTimer)
+                        }
+                    })
+
+                    Toast2.fire({
+                        icon: 'error',
+                        title: `${results.message}`
+                    })
+                }
+
+            }
+
+            async function addToCartAction(target) {
+
+                const res = await fetch('/cart/addItemsInCart', {
+                    method: 'POST',
+                    headers: {
+                        'Content-type': 'application/json; charset=UTF-8',
+                    },
+                    body: JSON.stringify({
+                        data: { id: target.id }
+                    })
+                })
+            }
+        </script>
