@@ -19,6 +19,25 @@ export class addProduct {
   @IsString()
   filebutton: string;
 }
+export class EditProduct {
+  @IsString()
+  product_name: string;
+
+  @IsString()
+  product_categorie: string;
+
+  @IsNumber()
+  available_quantity: number;
+
+  @IsNumber()
+  product_price: number;
+
+  @IsString()
+  product_description: string;
+
+  @IsString()
+  filebutton: string;
+}
 
 export class checkDelete {
   @IsNumber()

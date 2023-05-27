@@ -36,6 +36,13 @@ export class DashboardService {
       return new ForbiddenException();
     }
   }
+  async getUserDataSearch(params) {
+    try {
+      console.log('called getUserDataSearch');
+    } catch (error) {
+      return new ForbiddenException();
+    }
+  }
 
   async DeleteUserAction(data: any) {
     try {
@@ -64,6 +71,105 @@ export class DashboardService {
         error,
       );
       return new ForbiddenException();
+    }
+  }
+  async getEditPageDataLoad(pramas) {
+    try {
+      const userId: number = pramas.id;
+
+      const findUser = await prisma.users.findMany({
+        where: {
+          id: Number(userId),
+        },
+      });
+
+      return findUser;
+    } catch (error) {}
+  }
+  async getEditPageRole(pramas) {
+    try {
+      const userId: number = pramas.id;
+
+      const findUserRole = await prisma.users_has_Roles.findMany({
+        where: {
+          userId: Number(userId),
+        },
+        include: {
+          roles: {
+            select: {
+              name: true,
+            },
+          },
+        },
+      });
+
+      console.log(
+        '🚀 ~ file: dashboard.service.ts:91 ~ DashboardService ~ getEditPageRole ~ findUserRole:',
+        findUserRole,
+      );
+
+      return findUserRole;
+    } catch (error) {}
+  }
+  async getEditPageAllRole() {
+    try {
+      const findUserRole = await prisma.roles.findMany({});
+      console.log(
+        '🚀 ~ file: dashboard.service.ts:91 ~ DashboardService ~ getEditPageRole ~ findUserRole:',
+        findUserRole,
+      );
+
+      return findUserRole;
+    } catch (error) {}
+  }
+  async getUpdateDta(data) {
+    try {
+      await prisma.$transaction(async (tx) => {
+        const userRoleId = await tx.roles.findMany({
+          where: {
+            name: data.role,
+          },
+          select: {
+            id: true,
+          },
+        });
+
+        const roleId: number = userRoleId[0].id;
+
+        const updateUserRecord = await tx.users.update({
+          where: {
+            id: Number(data.id),
+          },
+          data: {
+            name: data.name,
+            email: data.email,
+            Users_has_Roles: {
+              deleteMany: {
+                userId: Number(data.id),
+              },
+              create: [
+                {
+                  assignedBy: 'Admin',
+                  assignedAt: new Date(),
+                  roleId: roleId,
+                },
+              ],
+            },
+          },
+        });
+        console.log(
+          '🚀 ~ file: dashboard.service.ts:141 ~ DashboardService ~ awaitprisma.$transaction ~ updateUserRecord:',
+          updateUserRecord,
+        );
+        if (updateUserRecord) {
+          return updateUserRecord;
+        }
+      });
+    } catch (error) {
+      console.log(
+        '🚀 ~ file: dashboard.service.ts:150 ~ DashboardService ~ getUpdateDta ~ error:',
+        error,
+      );
     }
   }
 }

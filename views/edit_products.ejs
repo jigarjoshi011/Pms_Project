@@ -24,20 +24,25 @@
     <script>
         let catData = ""
 
-
+        let url = window.location.href
+        const newUrl = new URL(url);
+        let [, id] = newUrl.search.slice(1).split("=");
+        console.log(id);
         async function EditProducts() {
             let ccontainer = document.querySelector('.viewProduct');
             ccontainer.innerHTML = '';
-            let url = window.location.href
-            const last = url.charAt(str.length - 1);
-            const EditformData = await fetch(`/products/edit-product-data/${last}`)
+
+            const EditformData = await fetch(`/product/edit-product-data/${id}`)
             const rec = await fetch('/categories/getcategory');
             const userRecord = await rec.json();
-            if (userRecord.status == 200 && userRecord.data) {
+
+            const userRecords = await EditformData.json();
+
+            if (userRecords.status == 200 && userRecords.data) {
                 let allUserRecord = []
-                allUserRecord = userRecord.data
-
-
+                let allCategoryRecord = []
+                allUserRecord = userRecords.data
+                allCategoryRecord = userRecord.data
                 let html = '';
                 let htmlSegment = `<div class="align-center"><form class="form-horizontal" onsubmit="return submitForm(event, this)">
             <fieldset>
@@ -45,7 +50,7 @@
             <div class="form-group">
             <label class="col-md-4 control-label" for="product_name">Product Name</label>  
             <div class="col-md-4">
-            <input id="product_name" name="product_name" placeholder="Product Name" class="form-control input-md my-4" required="" type="text" required>
+            <input id="product_name" name="product_name" placeholder="Product Name" class="form-control input-md my-4" required="" type="text" required value="${allUserRecord[0].name}">
                 
             </div>
             </div>
@@ -54,8 +59,8 @@
             <label class="col-md-4 control-label" for="product_category">Product Category</label>
             <div class="col-md-4 my-4">
                 <select id="product_categorie" name="product_categorie" class="form-control">
-                    <option value="default" selected disabled>Select Category</option>
-                   ${allUserRecord.map((data) => {
+                    <option value="${allUserRecord[0].categoryName}" selected disabled>Select Category</option>
+                   ${allCategoryRecord.map((data) => {
                     return `<option value=${data.name}>${data.name}</option>`
                 }).join(",")}
                          
@@ -67,13 +72,13 @@
             <div class="form-group">
             <label class="col-md-4 control-label" for="available_quantity">Available Quantity</label>  
             <div class="col-md-4 my-4">
-            <input id="available_quantity" name="available_quantity" placeholder="Available Quantity" class="form-control input-md" required type="number">
+            <input id="available_quantity" name="available_quantity" placeholder="Available Quantity" class="form-control input-md" required type="number" value="${allUserRecord[0].Quantity}">
                 
             </div>
             <div class="form-group">
             <label class="col-md-4 control-label" for="product_price">Product Price</label>  
             <div class="col-md-4 my-4">
-            <input id="product_price" name="product_price" placeholder="Price" class="form-control input-md" required type="number">
+            <input id="product_price" name="product_price" placeholder="Price" class="form-control input-md" required type="number" value="${allUserRecord[0].price}">
                 
             </div>
             </div>
@@ -81,12 +86,12 @@
             <div class="form-group">
             <label class="col-md-4 control-label" for="product_description">Product Description</label>
             <div class="col-md-4 my-4">                     
-                <input id="product_description" name="product_description" placeholder="" class="form-control input-md" required type="text">
+                <input id="product_description" name="product_description" placeholder="" class="form-control input-md" required type="text" value="${allUserRecord[0].description}">
           
             </div>
             <!-- File Button --> 
             <div class="form-group">
-            <label class="col-md-4 control-label" for="filebutton">main_image</label>
+            
             <div class="col-md-4 my-4">
                 <input required id="filebutton" name="filebutton" class="input-file" type="file">
             </div>
@@ -99,7 +104,8 @@
 
             </fieldset>
             </form>
-            </div>`;
+            </div>
+           `;
 
                 html += htmlSegment;
                 let container = document.querySelector('.addProduct');
@@ -111,15 +117,18 @@
 
         }
         EditProducts()
+
         async function submitForm(e, form) {
             e.preventDefault();
-            const submitForm = await fetch('/product/addProduct', {
+            const last = url.charAt(url.length - 1);
+            const submitForm = await fetch(`/product/edit-product/${id}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    product_name: form.product_name.value, product_categorie: form.product_categorie.value, available_quantity: form.available_quantity.value, product_description: form.product_description.value, filebutton: form.filebutton.value, product_price: form.product_price.value
+                    id: last,
+                    product_name: form.product_name.value, product_categorie: form.product_categorie.value, available_quantity: form.available_quantity.value, product_description: form.product_description.value, filebutton: form.filebutton.value, product_price: form.product_price.value,
                 })
             })
             const results = await submitForm.json();
@@ -140,7 +149,7 @@
 
                 Toast2.fire({
                     icon: 'success',
-                    title: `${results.message}`
+                    title: `${results.message} `
                 })
                 document.querySelector('#product_name').value = ""
                 document.querySelector('#product_categorie').value = ""

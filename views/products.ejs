@@ -1,5 +1,32 @@
 <%- include("dashboard") -%>
+    <style>
+        .pagination a {
+            color: black;
+            float: left;
+            padding: 8px 16px;
+            text-decoration: none;
+            transition: background-color .3s;
+        }
+
+        .pagination a.active {
+            background-color: dodgerblue;
+            color: white;
+        }
+
+        .pagination a:hover:not(.active) {
+            background-color: #ddd;
+        }
+    </style>
     <div class="container">
+        <div class="input-group d-flex my-3">
+            <div class="form-outline">
+                <input type="search" placeholder="Search" id="searchInput" class="form-control" oninput="search()"
+                    autofocus="true" />
+            </div>
+            <button type="button" class="btn btn-primary">
+                <i class="fa fa-search"></i>
+            </button>
+        </div>
         <div class="blur-ui p-3 pb-0 bg-gray">
             <h4 class="text-black ">Products</h4>
             <ul class="nav nav-tabs">
@@ -29,24 +56,30 @@
 
         </div>
     </div>
+    <div class="container">
+        <div class="pagination">
+            <a href="#">&laquo;</a>
+
+            <a href="#">&raquo;</a>
+        </div>
+    </div>
     <script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
     <script>
-
         let catData = ""
-        async function ViewProducts() {
-            let ccontainer = document.querySelector('.addProduct');
-            let viewCon = document.querySelector('.viewProduct');
-            viewCon.innerHTML = catData
-            ccontainer.innerHTML = '';
-            const rec = await fetch('/product/getProducts');
-            const userRecord = await rec.json();
-            if (userRecord.status == 200 && userRecord.data) {
+        let searchQuery = ""
+        const search = async (value) => {
+            var val = document.getElementById("searchInput").value;
+            searchQuery = val;
+            if (!val) {
+                ViewProducts()
+            }
+            let searches = await fetch(`/product/search?val=${val}`)
+            let Searchdata = await searches.json();
+            let SearchResults = Searchdata.data
+            console.log("🚀 ~ file: products.ejs:70 ~ search ~ SearchResults:", SearchResults)
 
-                let allUserRecord = []
-                allUserRecord = userRecord.data.data
-                console.log("🚀 ~ file: products.ejs:45 ~ ViewProducts ~ allUserRecord:", allUserRecord)
 
-                let html = ` <div class="container mt-4">
+            let html = ` <div class="container mt-4">
                 <div class="table-responsive">
                     <table class="table table-hover">
                         <thead>
@@ -64,12 +97,93 @@
 
                         </thead>
                         <tbody class="data">
+                        
 
                         </tbody>
                     </table>
                 </div>`
+
+            let container = document.querySelector('.viewProduct');
+            container.innerHTML = html;
+
+
+            let ct = ``
+
+            SearchResults.forEach((element, i) => {
+                let htmlSegment = `<tr>
+                        <td>${i + 1}</td>
+                        <td>${element.id}</td>
+                        <td>${element.name}</td>
+                        <td>${element.price}</td>
+                        <td>${element.catagoryName}</td>
+                        <td>${element.description}</td>
+                        <td>${element.createdAt}</td>
+                        <td><a id="${element.id}"class="nav-link bg-info text-center text-white rounded-pill" onClick ="EditAction(this)"><i class="bi bi-pen-fill text-dark"></i></a></td>
+                        <td><a id="${element.id}" class="nav-link bg-danger text-center text-white rounded-pill" onClick ="DeleteAction(this)">Delete</a></td>
+                    </tr>`;
+                ct += htmlSegment;
+            });
+            let okycontainer = document.querySelector('.data');
+            okycontainer.innerHTML = ct;
+
+
+
+
+        }
+        const selectLimit = () => {
+            ViewProducts(parseInt(document.querySelector("#limit").value))
+        }
+        async function ViewProducts(val = 5, search = "") {
+            let ccontainer = document.querySelector('.addProduct');
+            let viewCon = document.querySelector('.viewProduct');
+            viewCon.innerHTML = catData
+            ccontainer.innerHTML = '';
+            const rec = await fetch(`/product/getProductpage?page=1&limit=${val}`);
+            const recs = await fetch(`/product/getProducts`);
+
+            const userRecord = await rec.json();
+            const allRecord = await recs.json();
+            const totalLength = allRecord.data.data.length;
+
+            if (userRecord.status == 200 && userRecord.data) {
+                let allUserRecord = []
+                allUserRecord = userRecord.data.data
+                let iterableProducts = []
+
+
+                let html = ` <div class="container mt-4">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>#  &nbsp; <select id="limit"                  name="limit" onchange="selectLimit()">
+                            <option  value="5">5</option>
+                            <option value="2">2</option>
+                            <option value="15">15</option>
+                            <option value="20">20</option>
+
+                                    </select></th>
+                                <th>Product Id</th>
+                                <th>Product Name</th>
+                                <th>Product Price</th>
+                                <th>Product Category</th>
+                                <th>Product Description</th>
+                                <th>Created At</th>
+                                <th class="text-center">Edit</th>
+                                <th class="text-center">Action</th>
+                            </tr>
+
+                        </thead>
+                        <tbody class="data">
+                           
+
+                        </tbody>
+                    </table>
+                </div>`
+
                 let container = document.querySelector('.viewProduct');
                 container.innerHTML = html;
+                let limit = document.querySelector("#limit").value
 
                 let ct = ``
 
@@ -82,7 +196,7 @@
                         <td>${element.catagoryName}</td>
                         <td>${element.description}</td>
                         <td>${element.createdAt}</td>
-                        <td><a id="${element.id}"class="nav-link bg-info text-center text-white rounded-pill" onClick ="EditAction(this)"><i class='fas fa-edit' style='font-size:18px;color:red'></i></a></td>
+                        <td><a id="${element.id}"class="nav-link bg-info text-center text-white rounded-pill" onClick ="EditAction(this)"><i class="bi bi-pen-fill text-dark"></i></a></td>
                         <td><a id="${element.id}" class="nav-link bg-danger text-center text-white rounded-pill" onClick ="DeleteAction(this)">Delete</a></td>
                     </tr>`;
                     ct += htmlSegment;
@@ -90,11 +204,89 @@
                 let okycontainer = document.querySelector('.data');
                 okycontainer.innerHTML = ct;
 
+                let allPagesHtml = ``
+
+                for (let i = 1; i <= Math.ceil(totalLength / val); i++) {
+                    let pageTags = `<a class="page-link" onclick="fetchData(${i},${val})" >${i}</a> `;
+                    allPagesHtml += pageTags
+                }
+                let pagesSelect = document.querySelector('.pagination');
+                pagesSelect.innerHTML = allPagesHtml;
             }
+
+        }
+        async function fetchData(i, limit) {
+            console.log(`/product/getProductpage?page=${i}&limit=${limit}`);
+            const fetchRecord = await fetch(`/product/getProductpage?page=${i}&limit=${limit}`)
+            const fetchResult = await fetchRecord.json();
+            let NextProducts = []
+            NextProducts = fetchResult.data.data
+            let html = ` <div class="container mt-4">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>#  &nbsp; <select id="limit"                  name="limit" onchange="selectLimit()">
+                            <option  value="5">5</option>
+                            <option value="2">2</option>
+                            <option value="15">15</option>
+                            <option value="20">20</option>
+
+                                    </select></th>
+                                <th>Product Id</th>
+                                <th>Product Name</th>
+                                <th>Product Price</th>
+                                <th>Product Category</th>
+                                <th>Product Description</th>
+                                <th>Created At</th>
+                                <th class="text-center">Edit</th>
+                                <th class="text-center">Action</th>
+                            </tr>
+
+                        </thead>
+                        <tbody class="data">
+                        
+
+                        </tbody>
+                    </table>
+                </div>`
+
+            let container = document.querySelector('.viewProduct');
+            container.innerHTML = html;
+
+            let ct = ``
+
+            NextProducts.forEach((element, i) => {
+                let htmlSegment = `<tr>
+                        <td>${i + 1}</td>
+                        <td>${element.id}</td>
+                        <td>${element.name}</td>
+                        <td>${element.price}</td>
+                        <td>${element.catagoryName}</td>
+                        <td>${element.description}</td>
+                        <td>${element.createdAt}</td>
+                        <td><a id="${element.id}"class="nav-link bg-info text-center text-white rounded-pill" onClick ="EditAction(this)"><i class="bi bi-pen-fill text-dark"></i></a></td>
+                        <td><a id="${element.id}" class="nav-link bg-danger text-center text-white rounded-pill" onClick ="DeleteAction(this)">Delete</a></td>
+                    </tr>`;
+                ct += htmlSegment;
+            });
+            let okycontainer = document.querySelector('.data');
+            okycontainer.innerHTML = ct;
+
+            let allPagesHtml = ``
+
+            for (let i = 1; i <= Math.ceil(totalLength / val); i++) {
+                console.log("🚀 ~ file: products.ejs:138 ~ ViewProducts ~ val:", val)
+                let pageTags = `<a class="page-link" onclick="fetchData(${i},${val})" >${i}</a> `;
+                allPagesHtml += pageTags
+            }
+            let pagesSelect = document.querySelector('.pagination');
+            pagesSelect.innerHTML = allPagesHtml;
         }
         ViewProducts()
-
         async function AddProducts() {
+            document.querySelectorAll('.pagination')
+            // document.getElementsByClassName('.pagination')
             let ccontainer = document.querySelector('.viewProduct');
             ccontainer.innerHTML = '';
             const rec = await fetch('/categories/getcategory');
@@ -105,67 +297,67 @@
 
 
                 let html = '';
-                let htmlSegment = `<div class="align-center"><form class="form-horizontal" onsubmit="return submitForm(event, this)">
-            <fieldset>
+                let htmlSegment = `< div class= "align-center" > <form class="form-horizontal" onsubmit="return submitForm(event, this)">
+                        <fieldset>
             <!-- Text input-->
-            <div class="form-group">
-            <label class="col-md-4 control-label" for="product_name">Product Name</label>  
-            <div class="col-md-4">
-            <input id="product_name" name="product_name" placeholder="Product Name" class="form-control input-md my-4" required="" type="text" required>
-                
-            </div>
-            </div>
-            <!-- Select Basic -->
-            <div class="form-group">
-            <label class="col-md-4 control-label" for="product_category">Product Category</label>
-            <div class="col-md-4 my-4">
-                <select id="product_categorie" name="product_categorie" class="form-control">
-                    <option value="default" selected disabled>Select Category</option>
-                   ${allUserRecord.map((data) => {
+                            <div class="form-group">
+                                <label class="col-md-4 control-label" for="product_name">Product Name</label>
+                                <div class="col-md-4">
+                                    <input id="product_name" name="product_name" placeholder="Product Name" class="form-control input-md my-4" required="" type="text" required>
+
+                                </div>
+                            </div>
+                            <!-- Select Basic -->
+                            <div class="form-group">
+                                <label class="col-md-4 control-label" for="product_category">Product Category</label>
+                                <div class="col-md-4 my-4">
+                                    <select id="product_categorie" name="product_categorie" class="form-control">
+                                        <option value="default" selected disabled>Select Category</option>
+                                        ${allUserRecord.map((data) => {
                     return `<option value=${data.name}>${data.name}</option>`
                 }).join(",")}
-                         
-                </select>
-            </div>
-            </div>
 
-            <!-- Text input-->
-            <div class="form-group">
-            <label class="col-md-4 control-label" for="available_quantity">Available Quantity</label>  
-            <div class="col-md-4 my-4">
-            <input id="available_quantity" name="available_quantity" placeholder="Available Quantity" class="form-control input-md" required type="number">
-                
-            </div>
-            <div class="form-group">
-            <label class="col-md-4 control-label" for="product_price">Product Price</label>  
-            <div class="col-md-4 my-4">
-            <input id="product_price" name="product_price" placeholder="Price" class="form-control input-md" required type="number">
-                
-            </div>
-            </div>
-            <!-- Textarea -->
-            <div class="form-group">
-            <label class="col-md-4 control-label" for="product_description">Product Description</label>
-            <div class="col-md-4 my-4">                     
-                <input id="product_description" name="product_description" placeholder="" class="form-control input-md" required type="text">
-          
-            </div>
-            <!-- File Button --> 
-            <div class="form-group">
-            <label class="col-md-4 control-label" for="filebutton">main_image</label>
-            <div class="col-md-4 my-4">
-                <input required id="filebutton" name="filebutton" class="input-file" type="file">
-            </div>
-            </div>
-            <div class="form-group">
-            <div class="col-md-4 my-4">
-                <input class='bg-success p-2 rounded-pill text-light' type="submit" value="Add Product" id="submit">
-            </div>
-            </div>
+                                    </select>
+                                </div>
+                            </div>
 
-            </fieldset>
-            </form>
-            </div>`;
+                            <!-- Text input-->
+                            <div class="form-group">
+                                <label class="col-md-4 control-label" for="available_quantity">Available Quantity</label>
+                                <div class="col-md-4 my-4">
+                                    <input id="available_quantity" name="available_quantity" placeholder="Available Quantity" class="form-control input-md" required type="number">
+
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label" for="product_price">Product Price</label>
+                                    <div class="col-md-4 my-4">
+                                        <input id="product_price" name="product_price" placeholder="Price" class="form-control input-md" required type="number">
+
+                                    </div>
+                                </div>
+                                <!-- Textarea -->
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label" for="product_description">Product Description</label>
+                                    <div class="col-md-4 my-4">
+                                        <input id="product_description" name="product_description" placeholder="" class="form-control input-md" required type="text">
+
+                                    </div>
+                                    <!-- File Button -->
+                                    <div class="form-group">
+                                        <label class="col-md-4 control-label" for="filebutton">main_image</label>
+                                        <div class="col-md-4 my-4">
+                                            <input required id="filebutton" name="filebutton" class="input-file" type="file">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-md-4 my-4">
+                                            <input class='bg-success p-2 rounded-pill text-light' type="submit" value="Add Product" id="submit">
+                                        </div>
+                                    </div>
+
+                                </fieldset>
+                            </form>
+                        </div>`;
 
                 html += htmlSegment;
                 let container = document.querySelector('.addProduct');
@@ -248,9 +440,7 @@
                 ViewProducts()
             }
         }
-
         async function EditAction(target) {
-            target.id
-            window.location.assign(`/product/edit-product/${target.id}`)
+            window.location.assign(`/product/edit-product?id=${target.id}`)
         }
     </script>

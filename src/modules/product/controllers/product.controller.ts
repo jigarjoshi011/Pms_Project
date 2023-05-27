@@ -6,6 +6,7 @@ import {
   HttpStatus,
   Param,
   Post,
+  Query,
   Render,
   Req,
   Res,
@@ -15,7 +16,11 @@ import { ProductService } from '../services/product.service';
 import { AuthGuard } from 'src/common/guards/auth.guard';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { Request, Response } from 'express';
-import { addProduct, checkDelete } from '../dtos/checkProductInput.dto';
+import {
+  EditProduct,
+  addProduct,
+  checkDelete,
+} from '../dtos/checkProductInput.dto';
 import { JwtService } from '@nestjs/jwt';
 @Controller('product')
 export class ProductController {
@@ -53,6 +58,36 @@ export class ProductController {
       secret: process.env.JWT_SECRET,
     });
     const result: any = await this.productService.getAllProducts(payload);
+
+    return res.status(HttpStatus.OK).json({
+      status: HttpStatus.OK,
+      data: result,
+      message: `Successfully Edited Product Data`,
+    });
+  }
+  @Get('getProductpage')
+  @HttpCode(HttpStatus.OK)
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Dashboard category render.',
+  })
+  @ApiOperation({ summary: 'Dashboard category render.' })
+  public async getProductsData(
+    @Req()
+    req: Request,
+    @Res()
+    res: Response,
+    @Query() params,
+  ): Promise<any> {
+    const token = req.cookies['auth_token'];
+    const payload = await this.jwtService.verifyAsync(token, {
+      secret: process.env.JWT_SECRET,
+    });
+    const result: any = await this.productService.getAllProductsDataFinal(
+      params,
+      payload,
+    );
+
     return res.status(HttpStatus.OK).json({
       status: HttpStatus.OK,
       data: result,
@@ -71,19 +106,24 @@ export class ProductController {
     req: Request,
     @Res()
     res: Response,
+    @Body() data: EditProduct,
   ): Promise<any> {
     const token = req.cookies['auth_token'];
     const payload = await this.jwtService.verifyAsync(token, {
       secret: process.env.JWT_SECRET,
     });
-    const result: any = await this.productService.getProductEdit(payload);
+    const result: any = await this.productService.getProductEdited(
+      data,
+      payload,
+    );
     return res.status(HttpStatus.OK).json({
       status: HttpStatus.OK,
       data: result,
       message: `Successfully Edit Product Data`,
     });
   }
-  @Get('edit-product/:id')
+
+  @Get('edit-product')
   @Render('edit_products')
   @HttpCode(HttpStatus.OK)
   @ApiResponse({
@@ -91,7 +131,11 @@ export class ProductController {
     description: 'Edit Product Page',
   })
   @ApiOperation({ summary: 'Edit Product Page' })
-  public async getProductEditPage() {
+  public async getProductEditPage(@Query() params) {
+    console.log(
+      '🚀 ~ file: product.controller.ts:135 ~ ProductController ~ getProductEditPage ~ params:',
+      params,
+    );
     return;
   }
 
@@ -108,9 +152,52 @@ export class ProductController {
     req: Request,
     @Res()
     res: Response,
-    @Param() params: number,
+    @Param() params: string,
   ): Promise<any> {
+    console.log(
+      '🚀 ~ file: product.controller.ts:157 ~ ProductController ~ params:',
+      params,
+    );
     const result: any = await this.productService.EditProductGetData(params);
+
+    if (result[0].id) {
+      return res.status(HttpStatus.OK).json({
+        status: HttpStatus.OK,
+        data: result,
+        message: `Product Seacrched ...`,
+      });
+    } else {
+      return res.status(HttpStatus.BAD_REQUEST).json({
+        status: HttpStatus.BAD_REQUEST,
+        data: result,
+        message: `Something went wrong to Product`,
+      });
+    }
+  }
+  @Get('/search')
+  @HttpCode(HttpStatus.OK)
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Edit Product data',
+  })
+  @ApiOperation({ summary: 'Edit Product data' })
+  public async getProductSearch(
+    @Req()
+    req: Request,
+    @Res()
+    res: Response,
+    @Query() params: number,
+  ): Promise<any> {
+    console.log(
+      '🚀 ~ file: product.controller.ts:191 ~ ProductController ~ params:',
+      params,
+    );
+    const result: any = await this.productService.SearchProducts(params);
+    return res.status(HttpStatus.OK).json({
+      status: HttpStatus.OK,
+      data: result,
+      message: `Search Product done successfully`,
+    });
   }
 
   @Post('addProduct')

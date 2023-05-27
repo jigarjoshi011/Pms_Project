@@ -47,21 +47,16 @@ export class CategoriesService {
         where: { id: Number(data?.id) },
       });
       if (findCategory) {
-        const deleteCategoryAction =
-          await prisma.productsOnCategories.deleteMany({
-            where: { c_Id: Number(data?.id) },
-          });
-        if (deleteCategoryAction) {
-          const deleteCategory = await prisma.categories.deleteMany({
-            where: {
-              id: Number(data?.id),
-            },
-          });
-          if (deleteCategory) {
-            return deleteCategoryAction;
-          } else {
-            return new BadRequestException();
-          }
+        const deleteCategory = await prisma.categories.update({
+          data: {
+            is_deleted: true,
+          },
+          where: {
+            id: Number(data?.id),
+          },
+        });
+        if (deleteCategory) {
+          return deleteCategory;
         } else {
           return new BadRequestException();
         }

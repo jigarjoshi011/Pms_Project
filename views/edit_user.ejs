@@ -1,0 +1,249 @@
+<%- include("dashboard") -%>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+            font-family: 'Alkatra', cursive;
+        }
+
+        #sign-form {
+            width: 50%;
+            height: 100%;
+            margin: 10vh auto;
+            /* background-color: brown; */
+            padding: 5%;
+        }
+
+        label:not(label:first-of-type) {
+            display: block;
+            margin: 15px 0 5px 0;
+            font-size: 14px;
+        }
+
+        .sentence-agree {
+            display: inline;
+            font-size: 14px;
+        }
+
+        #submit {
+            display: block;
+            width: 100%;
+            height: 30px;
+            padding: 0 20px;
+            background-color: #333399 !important;
+            color: #fff !important;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        #submit:hover {
+            background-color: #23236a !important;
+        }
+
+        div.hr-left,
+        div.hr-right {
+            width: 30%;
+            height: 1px;
+            background-color: #cccccc;
+        }
+
+        p.guide-google {
+            font-size: 14px;
+            color: #cccccc;
+            width: 40%;
+            margin: auto 5px;
+        }
+
+        input:not(input#terms-agree) {
+            background-color: #fff;
+            width: 100%;
+            height: 45px;
+            padding-left: 20px;
+            border: 1px solid #cccccc;
+            border-radius: 30px;
+            color: #333399;
+        }
+
+        input:focus {
+            outline: 1px solid #333399;
+        }
+
+        .google-sign-btn {
+            width: 100%;
+            height: 45px;
+            border: 1px solid #cccccc;
+            border-radius: 30px;
+            outline: none;
+            background-color: #fff;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        .google-sign-btn:hover {
+            background-color: #cccccc;
+        }
+
+        i.fa-google {
+            font-size: 25px;
+            margin-right: 5px;
+            vertical-align: middle;
+            color: #333399;
+        }
+
+        .form-caption {
+            color: #737373;
+            margin-bottom: 30px;
+            ;
+        }
+
+        .star-required {
+            color: #333399;
+        }
+
+        input[type=checkbox] {
+            margin: 30px 0 30px 0;
+            accent-color: #333399;
+        }
+
+        a {
+            color: #333399;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        a:hover {
+            color: #23236a;
+        }
+
+        .have-account-line {
+            margin: 30px 0 30px 0;
+            font-size: 14px;
+        }
+
+        .info {
+            color: #737373;
+            font-size: 14px;
+        }
+
+        .google-guide-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px 0;
+        }
+    </style>
+
+
+    <body>
+
+
+        <div class="container" id="EditDtaa">
+
+        </div>
+    </body>
+    <script>
+        let url = window.location.href
+        const newUrl = new URL(url);
+        let [, id] = newUrl.search.slice(1).split("=");
+        async function EditUser() {
+            const res = await fetch(`/dashboard/user/${id}`)
+            const resa = await fetch(`/dashboard/user/role/${id}`)
+            const allR = await fetch(`/dashboard/user/allrole/${id}`)
+            const some = await res.json();
+            const some1 = await resa.json();
+            const some2 = await allR.json();
+            const EditUserRole = some1.data
+
+            const EditUserData = some.data
+            const AllRoles = some2.data
+
+            console.log(EditUserRole[0].roles.name);
+            let html = ``;
+            let htmlSegment = `<form class="sign-form" id="sign-form" autocomplete="on" onsubmit="return submitForm(event, this)">
+                <h1 class="form-title">Edit User</h1>
+                <p class="form-caption">See your growth and get consulting support!</p>
+
+                <br>
+
+
+                <label for="username">Name<span class="star-required">*</span></label>
+                <input type="text" value="${EditUserData[0].name}" name="name" id="username" placeholder="Name"  required>
+
+                <label for="email">Email<span class="star-required">*</span></label>
+                <input type="email"  value=${EditUserData[0].email}  name="email" id="email" placeholder="mail@website.com" required>
+
+                <label for="password">Role<span class="star-required">*</span></label>
+                <select class="p-2 mx-1 rounded-pill text-center" name="password" id="password" style="width: 230px;">
+                    <option value="${EditUserRole[0].roles.name}" selected disabled>${EditUserRole[0].roles.name}</option>
+                   ${AllRoles.map((data) => {
+                if (data.name != EditUserRole[0].roles.name)
+                    return `<option value=${data.name}>${data.name}</option>`
+            }).join(",")}
+                </select >
+
+            <br>
+
+                <input class="my-5" type="submit" value="Update User" id="submit">
+
+                    <p class="info">&copy;2023 Jigar Joshi All rights reserved.</p>
+                </form>`;
+            html += htmlSegment;
+            let container = document.querySelector('#EditDtaa');
+            container.innerHTML = html;
+            html += htmlSegment;
+        }
+        EditUser()
+
+        async function submitForm(e, form) {
+            e.preventDefault();
+            let url = window.location.href
+            const newUrl = new URL(url);
+            let [, id] = newUrl.search.slice(1).split("=");
+
+            console.log("i am submitting");
+
+            const submitForm = await fetch(`/dashboard/user/${id}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    id: id,
+                    name: form.name.value,
+                    email: form.email.value,
+                    role: document.getElementById('password').value
+
+
+                })
+            })
+            const results = await submitForm.json();
+            console.log(results);
+            if (results.status == 200) {
+
+
+                const Toast2 = Swal.mixin({
+                    toast: true,
+                    position: 'top',
+                    showConfirmButton: false,
+                    timer: 2000,
+                    timerProgressBar: true,
+
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+
+                    }
+                })
+                location.assign('/dashboard/listUsers')
+
+
+                Toast2.fire({
+                    icon: 'success',
+                    title: `${results.message} `
+                })
+
+            }
+        }
+    </script>

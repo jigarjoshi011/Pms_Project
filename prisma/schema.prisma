@@ -79,6 +79,7 @@ model Categories {
   createdAt            DateTime?              @default(now())
   updatedAt            DateTime?              @default(now())
   deletedAt            DateTime?
+  is_deleted           Boolean                @default(false)
   description          String?
   ProductsOnCategories ProductsOnCategories[]
 }

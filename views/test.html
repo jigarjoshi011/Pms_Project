@@ -1,36 +1,68 @@
-<div class="card my-4">
-    <img src="${element.image}" alt="Los Angeles Skyscrapers" />
-    <div class="card-body">
-        <h2 class="card-title">${element.name}</h2>
-        <div>
-            <h3 class="my-4"><span>$</span>${element.price}</h3>
-        </div>
-        <div class="">
-            <a id="${element.id}" class="bg-danger text-light rounded pill p-2 border border-dark"
-                onclick="removeOrderAction(this)">
+<div class="align-center">
+    <form class="form-horizontal" onsubmit="return submitForm(event, this)">
+        <fieldset>
+            <!-- Text input-->
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="product_name">Product Name</label>
+                <div class="col-md-4">
+                    <input id="product_name" name="product_name" placeholder="Product Name"
+                        class="form-control input-md my-4" required="" type="text" required
+                        value="${allUserRecord[0].name}">
 
-                <i class="fa fa-shopping-cart" style="font-size:16px"> <span class="mx-2">Canncel Order</span> </i>
+                </div>
+            </div>
+            <!-- Select Basic -->
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="product_category">Product Category</label>
+                <div class="col-md-4 my-4">
+                    <select id="product_categorie" name="product_categorie" class="form-control">
+                        <option value="${allUserRecord[0].categoryName}" selected disabled>Select Category</option>
+                        ${allCategoryRecord.map((data) => {
+                        return `<option value=${data.name}>${data.name}</option>`
+                        }).join(",")}
 
-            </a>
-        </div>
-        <div class="my-5 mx-0 ">
-            <a id="${element.id}" class="bg-success text-light rounded pill p-2 border border-dark"
-                onclick="OrderProduct(this)">
-
-                <i class="fa fa-shopping-cart" style="font-size:16px"> <span class="mx-2">Order</span> </i>
-                <a class="bg-warning mx-4 p-2 rounded pill border border-dark">
-                    <span class="fw-bold">Quantity:&nbsp;${AllOrdedQuntity[i]}</span>
-
-                </a>
-            </a>
-        </div>
-
-        <div class="my-5 mx-0">
-
-            <div class="">
-                <h5 class="my-4"> <span class="fw-bold">Description:&nbsp&nbsp</span>${element.description}</h5>
+                    </select>
+                </div>
             </div>
 
-        </div>
-    </div>
+            <!-- Text input-->
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="available_quantity">Available Quantity</label>
+                <div class="col-md-4 my-4">
+                    <input id="available_quantity" name="available_quantity" placeholder="Available Quantity"
+                        class="form-control input-md" required type="number" value="${allUserRecord[0].Quantity}">
+
+                </div>
+                <div class="form-group">
+                    <label class="col-md-4 control-label" for="product_price">Product Price</label>
+                    <div class="col-md-4 my-4">
+                        <input id="product_price" name="product_price" placeholder="Price" class="form-control input-md"
+                            required type="number" value="${allUserRecord[0].price}">
+
+                    </div>
+                </div>
+                <!-- Textarea -->
+                <div class="form-group">
+                    <label class="col-md-4 control-label" for="product_description">Product Description</label>
+                    <div class="col-md-4 my-4">
+                        <input id="product_description" name="product_description" placeholder=""
+                            class="form-control input-md" required type="text" value="${allUserRecord[0].description}">
+
+                    </div>
+                    <!-- File Button -->
+                    <div class="form-group">
+
+                        <div class="col-md-4 my-4">
+                            <input required id="filebutton" name="filebutton" class="input-file" type="file">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-4 my-4">
+                            <input class='bg-success p-2 rounded-pill text-light' type="submit" value="Add Product"
+                                id="submit">
+                        </div>
+                    </div>
+
+        </fieldset>
+    </form>
 </div>
