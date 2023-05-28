@@ -1,85 +1,97 @@
 <%- include("dashboard") -%>
-    <style>
-        .pagination a {
-            color: black;
-            float: left;
-            padding: 8px 16px;
-            text-decoration: none;
-            transition: background-color .3s;
-        }
+<style>
+  .pagination a {
+    color: black;
+    float: left;
+    padding: 8px 16px;
+    text-decoration: none;
+    transition: background-color 0.3s;
+  }
 
-        .pagination a.active {
-            background-color: dodgerblue;
-            color: white;
-        }
+  .pagination a.active {
+    background-color: dodgerblue;
+    color: white;
+  }
 
-        .pagination a:hover:not(.active) {
-            background-color: #ddd;
-        }
-    </style>
-    <div class="container">
-        <div class="input-group d-flex my-3">
-            <div class="form-outline">
-                <input type="search" placeholder="Search" id="searchInput" class="form-control" oninput="search()"
-                    autofocus="true" />
-            </div>
-            <button type="button" class="btn btn-primary">
-                <i class="fa fa-search"></i>
-            </button>
-        </div>
-        <div class="blur-ui p-3 pb-0 bg-gray">
-            <h4 class="text-black ">Products</h4>
-            <ul class="nav nav-tabs">
-                <li class="nav-item w-50 text-center all-center">
-                    <a class="nav-link w-100 fw-600 active" data-bs-toggle="tab" href="#View-Products" id="VP"
-                        onclick="ViewProducts()">
-                        <span>
-                            View Products
-                        </span>
-
-                    </a>
-                </li>
-                <li class="nav-item w-50 text-center all-center">
-                    <a class="nav-link w-100 fw-600 " data-bs-toggle="tab" href="# Add-Product" id="AP"
-                        onclick="AddProducts()">
-                        <span>
-                            Add Product
-                        </span>
-                    </a>
-                </li>
-            </ul>
-        </div>
-        <div class="addProduct">
-
-        </div>
-        <div class="viewProduct">
-
-        </div>
+  .pagination a:hover:not(.active) {
+    background-color: #ddd;
+  }
+</style>
+<div class="container">
+  <div class="input-group d-flex my-3">
+    <div class="form-outline">
+      <input
+        type="search"
+        placeholder="Search"
+        id="searchInput"
+        class="form-control"
+        oninput="search()"
+        autofocus="true"
+      />
     </div>
-    <div class="container">
-        <div class="pagination">
-            <a href="#">&laquo;</a>
+    <button type="button" class="btn btn-primary">
+      <i class="fa fa-search"></i>
+    </button>
+  </div>
+  <div class="blur-ui p-3 pb-0 bg-gray">
+    <h4 class="text-black">Products</h4>
+    <ul class="nav nav-tabs">
+      <li class="nav-item w-50 text-center all-center">
+        <a
+          class="nav-link w-100 fw-600 active"
+          data-bs-toggle="tab"
+          href="#View-Products"
+          id="VP"
+          onclick="ViewProducts()"
+        >
+          <span> View Products </span>
+        </a>
+      </li>
+      <li class="nav-item w-50 text-center all-center">
+        <a
+          class="nav-link w-100 fw-600"
+          data-bs-toggle="tab"
+          href="# Add-Product"
+          id="AP"
+          onclick="AddProducts()"
+        >
+          <span> Add Product </span>
+        </a>
+      </li>
+    </ul>
+  </div>
+  <div class="addProduct"></div>
+  <div class="viewProduct"></div>
+</div>
+<div class="container">
+  <div class="pagination">
+    <a href="#">&laquo;</a>
 
-            <a href="#">&raquo;</a>
-        </div>
-    </div>
-    <script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
-    <script>
-        let catData = ""
-        let searchQuery = ""
-        const search = async (value) => {
-            var val = document.getElementById("searchInput").value;
-            searchQuery = val;
-            if (!val) {
-                ViewProducts()
-            }
-            let searches = await fetch(`/product/search?val=${val}`)
-            let Searchdata = await searches.json();
-            let SearchResults = Searchdata.data
-            console.log("🚀 ~ file: products.ejs:70 ~ search ~ SearchResults:", SearchResults)
+    <a href="#">&raquo;</a>
+  </div>
+</div>
+<script
+  src="https://kit.fontawesome.com/a076d05399.js"
+  crossorigin="anonymous"
+></script>
+<script>
+  let catData = '';
+  let searchQuery = '';
+  const search = async (value) => {
+    var val = document.getElementById('searchInput').value;
+    searchQuery = val;
+    if (!val) {
+      ViewProducts();
+    }
+    let searches = await fetch(`/product/search?val=${val}`);
+    let Searchdata = await searches.json();
+    let SearchResults = Searchdata.data;
+    console.log(
+      '🚀 ~ file: products.ejs:70 ~ search ~ SearchResults:',
+      SearchResults,
+    );
 
-
-            let html = ` <div class="container mt-4">
+    let html = ` <div class="container mt-4">
                 <div class="table-responsive">
                     <table class="table table-hover">
                         <thead>
@@ -101,16 +113,15 @@
 
                         </tbody>
                     </table>
-                </div>`
+                </div>`;
 
-            let container = document.querySelector('.viewProduct');
-            container.innerHTML = html;
+    let container = document.querySelector('.viewProduct');
+    container.innerHTML = html;
 
+    let ct = ``;
 
-            let ct = ``
-
-            SearchResults.forEach((element, i) => {
-                let htmlSegment = `<tr>
+    SearchResults.forEach((element, i) => {
+      let htmlSegment = `<tr>
                         <td>${i + 1}</td>
                         <td>${element.id}</td>
                         <td>${element.name}</td>
@@ -118,45 +129,45 @@
                         <td>${element.catagoryName}</td>
                         <td>${element.description}</td>
                         <td>${element.createdAt}</td>
-                        <td><a id="${element.id}"class="nav-link bg-info text-center text-white rounded-pill" onClick ="EditAction(this)"><i class="bi bi-pen-fill text-dark"></i></a></td>
-                        <td><a id="${element.id}" class="nav-link bg-danger text-center text-white rounded-pill" onClick ="DeleteAction(this)">Delete</a></td>
+                        <td><a id="${
+                          element.id
+                        }"class="nav-link bg-info text-center text-white rounded-pill" onClick ="EditAction(this)"><i class="bi bi-pen-fill text-dark"></i></a></td>
+                        <td><a id="${
+                          element.id
+                        }" class="nav-link bg-danger text-center text-white rounded-pill" onClick ="DeleteAction(this)">Delete</a></td>
                     </tr>`;
-                ct += htmlSegment;
-            });
-            let okycontainer = document.querySelector('.data');
-            okycontainer.innerHTML = ct;
+      ct += htmlSegment;
+    });
+    let okycontainer = document.querySelector('.data');
+    okycontainer.innerHTML = ct;
+  };
+  const selectLimit = () => {
+    ViewProducts(parseInt(document.querySelector('#limit').value));
+  };
+  async function ViewProducts(val = 5, search = '') {
+    let ccontainer = document.querySelector('.addProduct');
+    let viewCon = document.querySelector('.viewProduct');
+    viewCon.innerHTML = catData;
+    ccontainer.innerHTML = '';
+    const rec = await fetch(`/product/getProductpage?page=1&limit=${val}`);
+    const recs = await fetch(`/product/getProducts`);
 
+    const userRecord = await rec.json();
+    const allRecord = await recs.json();
+    const totalLength = allRecord.data.data.length;
 
+    if (userRecord.status == 200 && userRecord.data) {
+      let allUserRecord = [];
+      allUserRecord = userRecord.data.data;
+      let iterableProducts = [];
 
-
-        }
-        const selectLimit = () => {
-            ViewProducts(parseInt(document.querySelector("#limit").value))
-        }
-        async function ViewProducts(val = 5, search = "") {
-            let ccontainer = document.querySelector('.addProduct');
-            let viewCon = document.querySelector('.viewProduct');
-            viewCon.innerHTML = catData
-            ccontainer.innerHTML = '';
-            const rec = await fetch(`/product/getProductpage?page=1&limit=${val}`);
-            const recs = await fetch(`/product/getProducts`);
-
-            const userRecord = await rec.json();
-            const allRecord = await recs.json();
-            const totalLength = allRecord.data.data.length;
-
-            if (userRecord.status == 200 && userRecord.data) {
-                let allUserRecord = []
-                allUserRecord = userRecord.data.data
-                let iterableProducts = []
-
-
-                let html = ` <div class="container mt-4">
+      let html = ` <div class="container mt-4">
                 <div class="table-responsive">
                     <table class="table table-hover">
                         <thead>
                             <tr>
-                                <th>#  &nbsp; <select id="limit"                  name="limit" onchange="selectLimit()">
+                                <th>#  &nbsp; <select id="limit" name="limit" onchange="selectLimit()">
+                                    <option selected disabled>limit</option>
                             <option  value="5">5</option>
                             <option value="2">2</option>
                             <option value="15">15</option>
@@ -179,16 +190,16 @@
 
                         </tbody>
                     </table>
-                </div>`
+                </div>`;
 
-                let container = document.querySelector('.viewProduct');
-                container.innerHTML = html;
-                let limit = document.querySelector("#limit").value
+      let container = document.querySelector('.viewProduct');
+      container.innerHTML = html;
+      let limit = document.querySelector('#limit').value;
 
-                let ct = ``
+      let ct = ``;
 
-                allUserRecord.forEach((element, i) => {
-                    let htmlSegment = `<tr>
+      allUserRecord.forEach((element, i) => {
+        let htmlSegment = `<tr>
                         <td>${i + 1}</td>
                         <td>${element.id}</td>
                         <td>${element.name}</td>
@@ -196,37 +207,43 @@
                         <td>${element.catagoryName}</td>
                         <td>${element.description}</td>
                         <td>${element.createdAt}</td>
-                        <td><a id="${element.id}"class="nav-link bg-info text-center text-white rounded-pill" onClick ="EditAction(this)"><i class="bi bi-pen-fill text-dark"></i></a></td>
-                        <td><a id="${element.id}" class="nav-link bg-danger text-center text-white rounded-pill" onClick ="DeleteAction(this)">Delete</a></td>
+                        <td><a id="${
+                          element.id
+                        }"class="nav-link bg-info text-center text-white rounded-pill" onClick ="EditAction(this)"><i class="bi bi-pen-fill text-dark"></i></a></td>
+                        <td><a id="${
+                          element.id
+                        }" class="nav-link bg-danger text-center text-white rounded-pill" onClick ="DeleteAction(this)">Delete</a></td>
                     </tr>`;
-                    ct += htmlSegment;
-                });
-                let okycontainer = document.querySelector('.data');
-                okycontainer.innerHTML = ct;
+        ct += htmlSegment;
+      });
+      let okycontainer = document.querySelector('.data');
+      okycontainer.innerHTML = ct;
 
-                let allPagesHtml = ``
+      let allPagesHtml = ``;
 
-                for (let i = 1; i <= Math.ceil(totalLength / val); i++) {
-                    let pageTags = `<a class="page-link" onclick="fetchData(${i},${val})" >${i}</a> `;
-                    allPagesHtml += pageTags
-                }
-                let pagesSelect = document.querySelector('.pagination');
-                pagesSelect.innerHTML = allPagesHtml;
-            }
-
-        }
-        async function fetchData(i, limit) {
-            console.log(`/product/getProductpage?page=${i}&limit=${limit}`);
-            const fetchRecord = await fetch(`/product/getProductpage?page=${i}&limit=${limit}`)
-            const fetchResult = await fetchRecord.json();
-            let NextProducts = []
-            NextProducts = fetchResult.data.data
-            let html = ` <div class="container mt-4">
+      for (let i = 1; i <= Math.ceil(totalLength / val); i++) {
+        let pageTags = `<a class="page-link" onclick="fetchData(${i},${val})" >${i}</a> `;
+        allPagesHtml += pageTags;
+      }
+      let pagesSelect = document.querySelector('.pagination');
+      pagesSelect.innerHTML = allPagesHtml;
+    }
+  }
+  async function fetchData(i, limit) {
+    console.log(`/product/getProductpage?page=${i}&limit=${limit}`);
+    const fetchRecord = await fetch(
+      `/product/getProductpage?page=${i}&limit=${limit}`,
+    );
+    const fetchResult = await fetchRecord.json();
+    let NextProducts = [];
+    NextProducts = fetchResult.data.data;
+    let html = ` <div class="container mt-4">
                 <div class="table-responsive">
                     <table class="table table-hover">
                         <thead>
                             <tr>
                                 <th>#  &nbsp; <select id="limit"                  name="limit" onchange="selectLimit()">
+                                    <option selected disabled>limit</option>
                             <option  value="5">5</option>
                             <option value="2">2</option>
                             <option value="15">15</option>
@@ -249,15 +266,15 @@
 
                         </tbody>
                     </table>
-                </div>`
+                </div>`;
 
-            let container = document.querySelector('.viewProduct');
-            container.innerHTML = html;
+    let container = document.querySelector('.viewProduct');
+    container.innerHTML = html;
 
-            let ct = ``
+    let ct = ``;
 
-            NextProducts.forEach((element, i) => {
-                let htmlSegment = `<tr>
+    NextProducts.forEach((element, i) => {
+      let htmlSegment = `<tr>
                         <td>${i + 1}</td>
                         <td>${element.id}</td>
                         <td>${element.name}</td>
@@ -265,39 +282,42 @@
                         <td>${element.catagoryName}</td>
                         <td>${element.description}</td>
                         <td>${element.createdAt}</td>
-                        <td><a id="${element.id}"class="nav-link bg-info text-center text-white rounded-pill" onClick ="EditAction(this)"><i class="bi bi-pen-fill text-dark"></i></a></td>
-                        <td><a id="${element.id}" class="nav-link bg-danger text-center text-white rounded-pill" onClick ="DeleteAction(this)">Delete</a></td>
+                        <td><a id="${
+                          element.id
+                        }"class="nav-link bg-info text-center text-white rounded-pill" onClick ="EditAction(this)"><i class="bi bi-pen-fill text-dark"></i></a></td>
+                        <td><a id="${
+                          element.id
+                        }" class="nav-link bg-danger text-center text-white rounded-pill" onClick ="DeleteAction(this)">Delete</a></td>
                     </tr>`;
-                ct += htmlSegment;
-            });
-            let okycontainer = document.querySelector('.data');
-            okycontainer.innerHTML = ct;
+      ct += htmlSegment;
+    });
+    let okycontainer = document.querySelector('.data');
+    okycontainer.innerHTML = ct;
 
-            let allPagesHtml = ``
+    let allPagesHtml = ``;
 
-            for (let i = 1; i <= Math.ceil(totalLength / val); i++) {
-                console.log("🚀 ~ file: products.ejs:138 ~ ViewProducts ~ val:", val)
-                let pageTags = `<a class="page-link" onclick="fetchData(${i},${val})" >${i}</a> `;
-                allPagesHtml += pageTags
-            }
-            let pagesSelect = document.querySelector('.pagination');
-            pagesSelect.innerHTML = allPagesHtml;
-        }
-        ViewProducts()
-        async function AddProducts() {
-            document.querySelectorAll('.pagination')
-            // document.getElementsByClassName('.pagination')
-            let ccontainer = document.querySelector('.viewProduct');
-            ccontainer.innerHTML = '';
-            const rec = await fetch('/categories/getcategory');
-            const userRecord = await rec.json();
-            if (userRecord.status == 200 && userRecord.data) {
-                let allUserRecord = []
-                allUserRecord = userRecord.data
+    for (let i = 1; i <= Math.ceil(totalLength / val); i++) {
+      console.log('🚀 ~ file: products.ejs:138 ~ ViewProducts ~ val:', val);
+      let pageTags = `<a class="page-link" onclick="fetchData(${i},${val})" >${i}</a> `;
+      allPagesHtml += pageTags;
+    }
+    let pagesSelect = document.querySelector('.pagination');
+    pagesSelect.innerHTML = allPagesHtml;
+  }
+  ViewProducts();
+  async function AddProducts() {
+    document.querySelectorAll('.pagination');
+    // document.getElementsByClassName('.pagination')
+    let ccontainer = document.querySelector('.viewProduct');
+    ccontainer.innerHTML = '';
+    const rec = await fetch('/categories/getcategory');
+    const userRecord = await rec.json();
+    if (userRecord.status == 200 && userRecord.data) {
+      let allUserRecord = [];
+      allUserRecord = userRecord.data;
 
-
-                let html = '';
-                let htmlSegment = `< div class= "align-center" > <form class="form-horizontal" onsubmit="return submitForm(event, this)">
+      let html = '';
+      let htmlSegment = `< div class= "align-center" > <form class="form-horizontal" onsubmit="return submitForm(event, this)">
                         <fieldset>
             <!-- Text input-->
                             <div class="form-group">
@@ -313,9 +333,11 @@
                                 <div class="col-md-4 my-4">
                                     <select id="product_categorie" name="product_categorie" class="form-control">
                                         <option value="default" selected disabled>Select Category</option>
-                                        ${allUserRecord.map((data) => {
-                    return `<option value=${data.name}>${data.name}</option>`
-                }).join(",")}
+                                        ${allUserRecord
+                                          .map((data) => {
+                                            return `<option value=${data.name}>${data.name}</option>`;
+                                          })
+                                          .join(',')}
 
                                     </select>
                                 </div>
@@ -359,88 +381,89 @@
                             </form>
                         </div>`;
 
-                html += htmlSegment;
-                let container = document.querySelector('.addProduct');
-                container.innerHTML = html;
-                html += htmlSegment;
-            }
+      html += htmlSegment;
+      let container = document.querySelector('.addProduct');
+      container.innerHTML = html;
+      html += htmlSegment;
+    }
+  }
+  async function submitForm(e, form) {
+    e.preventDefault();
+    const submitForm = await fetch('/product/addProduct', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        product_name: form.product_name.value,
+        product_categorie: form.product_categorie.value,
+        available_quantity: form.available_quantity.value,
+        product_description: form.product_description.value,
+        filebutton: form.filebutton.value,
+        product_price: form.product_price.value,
+      }),
+    });
+    const results = await submitForm.json();
+    console.log(results);
+    if (results.status == 200) {
+      const Toast2 = Swal.mixin({
+        toast: true,
+        position: 'top',
+        showConfirmButton: false,
+        timer: 7000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+          toast.addEventListener('mouseenter', Swal.stopTimer);
+          toast.addEventListener('mouseleave', Swal.resumeTimer);
+        },
+      });
 
+      Toast2.fire({
+        icon: 'success',
+        title: `${results.message}`,
+      });
+      document.querySelector('#product_name').value = '';
+      document.querySelector('#product_categorie').value = '';
+      document.querySelector('#available_quantity').value = '';
+      document.querySelector('#product_description').value = '';
+      document.querySelector('#product_price').value = '';
+      document.querySelector('#filebutton').value = '';
+    }
+  }
+  async function DeleteAction(e) {
+    alert('Are you sure you want to delete ?');
+    console.log(e.id);
+    const submitForm = await fetch('/product/deleteRecord', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        id: e.id,
+      }),
+    });
+    const results = await submitForm.json();
+    if (results.status === 200) {
+      const Toast2 = Swal.mixin({
+        toast: true,
+        position: 'top',
+        showConfirmButton: false,
+        timer: 7000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+          toast.addEventListener('mouseenter', Swal.stopTimer);
+          toast.addEventListener('mouseleave', Swal.resumeTimer);
+        },
+      });
 
-
-        }
-        async function submitForm(e, form) {
-            e.preventDefault();
-            const submitForm = await fetch('/product/addProduct', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    product_name: form.product_name.value, product_categorie: form.product_categorie.value, available_quantity: form.available_quantity.value, product_description: form.product_description.value, filebutton: form.filebutton.value, product_price: form.product_price.value
-                })
-            })
-            const results = await submitForm.json();
-            console.log(results);
-            if (results.status == 200) {
-
-                const Toast2 = Swal.mixin({
-                    toast: true,
-                    position: 'top',
-                    showConfirmButton: false,
-                    timer: 7000,
-                    timerProgressBar: true,
-                    didOpen: (toast) => {
-                        toast.addEventListener('mouseenter', Swal.stopTimer)
-                        toast.addEventListener('mouseleave', Swal.resumeTimer)
-                    }
-                })
-
-                Toast2.fire({
-                    icon: 'success',
-                    title: `${results.message}`
-                })
-                document.querySelector('#product_name').value = ""
-                document.querySelector('#product_categorie').value = ""
-                document.querySelector('#available_quantity').value = ""
-                document.querySelector('#product_description').value = ""
-                document.querySelector('#product_price').value = ""
-                document.querySelector('#filebutton').value = ""
-            }
-        }
-        async function DeleteAction(e) {
-            alert('Are you sure you want to delete ?')
-            console.log(e.id);
-            const submitForm = await fetch('/product/deleteRecord', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    id: e.id
-                })
-            })
-            const results = await submitForm.json();
-            if (results.status === 200) {
-                const Toast2 = Swal.mixin({
-                    toast: true,
-                    position: 'top',
-                    showConfirmButton: false,
-                    timer: 7000,
-                    timerProgressBar: true,
-                    didOpen: (toast) => {
-                        toast.addEventListener('mouseenter', Swal.stopTimer)
-                        toast.addEventListener('mouseleave', Swal.resumeTimer)
-                    }
-                })
-
-                Toast2.fire({
-                    icon: 'success',
-                    title: `${results.message}`
-                })
-                ViewProducts()
-            }
-        }
-        async function EditAction(target) {
-            window.location.assign(`/product/edit-product?id=${target.id}`)
-        }
-    </script>
+      Toast2.fire({
+        icon: 'success',
+        title: `${results.message}`,
+      });
+      ViewProducts();
+    }
+  }
+  async function EditAction(target) {
+    window.location.assign(`/product/edit-product?id=${target.id}`);
+  }
+</script>

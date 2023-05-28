@@ -94,45 +94,45 @@ const prisma = new PrismaClient();
  * add admin through seeder
  */
 
-// async function addAdmin() {
-//   try {
-//     const checkEmail = await prisma.users.findUnique({
-//       where: { email: 'admin@gmail.com' },
-//     });
-//     if (checkEmail != null) {
-//       console.log('hello');
-//       return { message: 'signup unsuccessful' };
-//     }
+async function addAdmin() {
+  try {
+    const checkEmail = await prisma.users.findUnique({
+      where: { email: 'admin@gmail.com' },
+    });
+    if (checkEmail != null) {
+      console.log('hello');
+      return { message: 'signup unsuccessful' };
+    }
 
-//     const saltOrRounds = 10;
-//     const hash = await bcrypt.hash('admin@123', saltOrRounds);
-//     const newUser = await prisma.users.create({
-//       data: {
-//         name: 'admin',
-//         email: 'admin@gmail.com',
-//         password: hash,
-//         created_at: `${new Date()}`,
-//         updated_at: `${new Date()}`,
-//         Users_has_Roles: {
-//           create: [
-//             {
-//               assignedBy: 'Itself',
-//               assignedAt: new Date(),
-//               roleId: 1,
-//             },
-//           ],
-//         },
-//       },
-//     });
-//   } catch (error) {
-//     console.log('🚀 ~ file: seed.ts:128 ~ addAdmin ~ error:', error);
-//   }
-// }
-// addAdmin()
-//   .catch((err) => {
-//     console.log(err);
-//     process.exit(1);
-//   })
-//   .finally(() => {
-//     prisma.$disconnect();
-//   });
+    const saltOrRounds = 10;
+    const hash = await bcrypt.hash('admin@123', saltOrRounds);
+    const newUser = await prisma.users.create({
+      data: {
+        name: 'admin',
+        email: 'admin@gmail.com',
+        password: hash,
+        created_at: `${new Date()}`,
+        updated_at: `${new Date()}`,
+        Users_has_Roles: {
+          create: [
+            {
+              assignedBy: 'Itself',
+              assignedAt: new Date(),
+              roleId: 1,
+            },
+          ],
+        },
+      },
+    });
+  } catch (error) {
+    console.log('🚀 ~ file: seed.ts:128 ~ addAdmin ~ error:', error);
+  }
+}
+addAdmin()
+  .catch((err) => {
+    console.log(err);
+    process.exit(1);
+  })
+  .finally(() => {
+    prisma.$disconnect();
+  });

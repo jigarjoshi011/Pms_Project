@@ -15,3 +15,18 @@ export class updateDto {
   @IsString()
   role: string;
 }
+export class addRoleByAdmin {
+  @IsString()
+name:string;
+@IsString()
+permissions:string
+}
+export class checkUserAdded {
+  @IsString()
+name:string;
+@IsString()
+@IsEmail()
+email:string
+@IsString()
+role:string
+}

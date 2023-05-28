@@ -27,9 +27,10 @@ export class AuthGuard implements CanActivate {
         payload,
       );
 
-      if (!(payload.role == 1)) {
+      if (!(payload.role == 1,4)) {
         throw new UnauthorizedException();
       }
+    
     } catch {
       throw new UnauthorizedException();
     }

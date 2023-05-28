@@ -1,7 +1,7 @@
-import { Body, Controller, Get, Post, Render, Res } from '@nestjs/common';
+import { Body, Controller, Get, HttpStatus, Post, Render, Req, Res } from '@nestjs/common';
 import { SignupService } from '../services/signup.service';
 import { getSignUpUserDTO } from '../DTOs/getSignUpUser.dto';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 
 @Controller('signup')
 export class SignupController {
@@ -16,10 +16,26 @@ export class SignupController {
   }
 
   @Post('')
-  async getSignup(@Body() getSignUpUser: getSignUpUserDTO) {
-    await this.signupService.getSignUpUser(getSignUpUser);
-    if (await this.signupService.getSignUpUser(getSignUpUser)) {
-      return { message: 'signup successful' };
-    }
+  async getSignup( @Req() req: Request,
+  @Res() res: Response,@Body() getSignUpUser: getSignUpUserDTO) {
+   const result : any =  await this.signupService.getSignUpUser(getSignUpUser);
+   console.log(result);
+   
+   if(result.status===400){
+    return res.status(HttpStatus.BAD_REQUEST).json({
+      status: HttpStatus.BAD_REQUEST,
+      data: result,
+      message: `Failed to Sign-Up`,
+    });
+   }
+   else{
+    return res.status(HttpStatus.OK).json({
+      status: HttpStatus.OK,
+      data: result,
+      message: `Successfully Registered`,
+    });
+   }
+
+  
   }
 }

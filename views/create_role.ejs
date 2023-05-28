@@ -15,7 +15,7 @@
     padding: 5%;
   }
 
-  label:not(label:first-of-type) {
+  label:not(label:first-of-type, label.che) {
     display: block;
     margin: 15px 0 5px 0;
     font-size: 14px;
@@ -55,7 +55,7 @@
     margin: auto 5px;
   }
 
-  input:not(input#terms-agree) {
+  input:not(input#terms-agree, input.same) {
     background-color: #fff;
     width: 100%;
     height: 45px;
@@ -101,7 +101,8 @@
   }
 
   input[type='checkbox'] {
-    margin: 30px 0 30px 0;
+    width: 10%;
+    margin: 1px 0 1px 0;
     accent-color: #333399;
   }
 
@@ -132,87 +133,92 @@
     text-align: center;
     padding: 20px 0;
   }
+  .same {
+    height: 18px;
+  }
 </style>
 
 <body>
-  <div class="container" id="EditDtaa"></div>
+  <div class="container my-0" id="EditDtaa">
+    <form
+      class="sign-form my-0"
+      id="sign-form"
+      autocomplete="on"
+      onsubmit="return submitForm(event, this)"
+    >
+      <h1 class="form-title">Add-Role</h1>
+
+      <br />
+
+      <label class="my-2" for="username"
+        >Role-Name<span class="star-required">*</span></label
+      >
+      <input
+        type="text"
+        name="name"
+        id="username"
+        placeholder="Role-Name"
+        required
+      />
+      <label class="mt-5" for="Permission"
+        >Role-Permissions<span class="star-required">*</span></label
+      >
+      <div class="my-3">
+        <input class="same" type="checkbox" id="Read" name="Read" value="1" />
+        <label class="che my-2" for="vehicle1"> Read </label><br />
+        <input
+          class="same"
+          type="checkbox"
+          id="Create"
+          name="Create"
+          value="2"
+        />
+        <label class="che my-2" for="vehicle1"> Create </label><br />
+        <input
+          class="same"
+          type="checkbox"
+          id="Update"
+          name="Update"
+          value="3"
+        />
+        <label class="che my-2" for="vehicle2"> Update</label><br />
+        <input
+          class="same"
+          type="checkbox"
+          id="Delete"
+          name="Delete"
+          value="4"
+        />
+        <label class="che my-2" for="vehicle3"> Delete</label><br /><br />
+      </div>
+      <br />
+
+      <input class="my-3" type="submit" value="Add-Role" id="submit" />
+
+      <p class="info">&copy;2023 Jigar Joshi All rights reserved.</p>
+    </form>
+  </div>
 </body>
 <script>
-  let url = window.location.href;
-  const newUrl = new URL(url);
-  let [, id] = newUrl.search.slice(1).split('=');
-  async function EditUser() {
-    const res = await fetch(`/dashboard/user/${id}`);
-    const resa = await fetch(`/dashboard/user/role/${id}`);
-    const allR = await fetch(`/dashboard/user/allrole/${id}`);
-    console.log(allR);
-    const some = await res.json();
-    const some1 = await resa.json();
-    const some2 = await allR.json();
-    console.log(some2);
-    const EditUserRole = some1.data;
-
-    const EditUserData = some.data;
-    const AllRoles = some2.data;
-
-    console.log(EditUserRole[0].roles.name);
-    let html = ``;
-    let htmlSegment = `<form class="sign-form my-0" id="sign-form" autocomplete="on" onsubmit="return submitForm(event, this)">
-                <h1 class="form-title">Edit User</h1>
-                <p class="form-caption">See your growth and get consulting support!</p>
-
-                <br>
-                <label for="username">Name<span class="star-required">*</span></label>
-                <input type="text" value="${
-                  EditUserData[0].name
-                }" name="name" id="username" placeholder="Name"  required>
-
-                <label for="email">Email<span class="star-required">*</span></label>
-                <input type="email"  value=${
-                  EditUserData[0].email
-                }  name="email" id="email" placeholder="mail@website.com" required>
-
-                <label for="password">Role<span class="star-required">*</span></label>
-                <select class="p-2 mx-1 rounded-pill text-center" name="password" id="password" style="width: 230px;">
-                    <option value="${
-                      EditUserRole[0].roles.name
-                    }" selected disabled>${EditUserRole[0].roles.name}</option>
-                   ${AllRoles.map((data) => {
-                     if ((data.name != EditUserRole[0].roles.name)&& (data.name!='Admin'))
-                       return `<option value=${data.name}>${data.name}</option>`;
-                   }).join(',')}
-                </select >
-
-            <br>
-
-                <input class="my-5" type="submit" value="Update User" id="submit">
-
-                    <p class="info">&copy;2023 Jigar Joshi All rights reserved.</p>
-                </form>`;
-    html += htmlSegment;
-    let container = document.querySelector('#EditDtaa');
-    container.innerHTML = html;
-  }
-  EditUser();
-
   async function submitForm(e, form) {
     e.preventDefault();
-    let url = window.location.href;
-    const newUrl = new URL(url);
-    let [, id] = newUrl.search.slice(1).split('=');
 
-    console.log('i am submitting');
+    var checkedValue = [];
+    var inputElements = document.getElementsByClassName('same');
+    for (var i = 0; inputElements[i]; ++i) {
+      if (inputElements[i].checked) {
+        checkedValue.push(Number(inputElements[i].value));
+      }
+    }
 
-    const submitForm = await fetch(`/dashboard/user/${id}`, {
+    const submitForm = await fetch(`/dashboard/createRole`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        id: id,
         name: form.name.value,
-        email: form.email.value,
-        role: document.getElementById('password').value,
+        permissions: checkedValue,
       }),
     });
     const results = await submitForm.json();
@@ -235,6 +241,25 @@
       Toast2.fire({
         icon: 'success',
         title: `${results.message} `,
+      });
+    } else {
+      const Toast2 = Swal.mixin({
+        toast: true,
+        position: 'top',
+        showConfirmButton: false,
+        timer: 2000,
+        timerProgressBar: true,
+
+        didOpen: (toast) => {
+          toast.addEventListener('mouseenter', Swal.stopTimer);
+          toast.addEventListener('mouseleave', Swal.resumeTimer);
+        },
+      });
+      location.assign('/dashboard/listUsers');
+
+      Toast2.fire({
+        icon: 'error',
+        title: `Failed to Add Role `,
       });
     }
   }

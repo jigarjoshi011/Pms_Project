@@ -44,7 +44,6 @@ export class LoginController {
     const result: any = await this.loginService.getLogin(Dto);
     if (result.token) {
       res.cookie('auth_token', result.token, { httpOnly: true });
-      //
       const payload: any = await this.jwtService.verifyAsync(result.token, {
         secret: process.env.JWT_SECRET,
       });

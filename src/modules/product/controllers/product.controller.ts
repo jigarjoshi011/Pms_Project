@@ -154,10 +154,6 @@ export class ProductController {
     res: Response,
     @Param() params: string,
   ): Promise<any> {
-    console.log(
-      '🚀 ~ file: product.controller.ts:157 ~ ProductController ~ params:',
-      params,
-    );
     const result: any = await this.productService.EditProductGetData(params);
 
     if (result[0].id) {
@@ -188,10 +184,6 @@ export class ProductController {
     res: Response,
     @Query() params: number,
   ): Promise<any> {
-    console.log(
-      '🚀 ~ file: product.controller.ts:191 ~ ProductController ~ params:',
-      params,
-    );
     const result: any = await this.productService.SearchProducts(params);
     return res.status(HttpStatus.OK).json({
       status: HttpStatus.OK,
@@ -212,10 +204,6 @@ export class ProductController {
     @Body() Dto: addProduct,
   ): Promise<any> {
     const result: any = await this.productService.AddProduct(Dto);
-    console.log(
-      '🚀 ~ file: product.controller.ts:68 ~ ProductController ~ result:',
-      result,
-    );
     return res.status(HttpStatus.OK).json({
       status: HttpStatus.OK,
       data: result,

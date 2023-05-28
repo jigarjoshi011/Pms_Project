@@ -43,4 +43,10 @@ export class user_homeController {
   ): Promise<any> {
     const result = await this.user_homeService.AddToCart(data);
   }
+  @Get('logout')
+  logout(@Req() req, @Res({ passthrough: true }) res) {
+    res.clearCookie('auth_token');
+    res.clearCookie('data');
+    res.redirect('/login');
+  }
 }
